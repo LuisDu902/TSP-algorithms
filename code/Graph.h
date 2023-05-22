@@ -2,7 +2,7 @@
 #define DA_GRAPH_H
 
 #include "VertexEdge.h"
-
+#include <stack>
 class Graph {
 public:
 
@@ -11,9 +11,9 @@ public:
     void addEdge(Vertex* &v1, Vertex* &v2, double distance) const;
 
     std::vector<Vertex *> getVertexSet() const;
-
-    void tspBT(std::vector<Vertex*> &bestPath);
-    void tspBTRec(int curIndex, double &minDist, std::vector<Vertex*> &bestPath);
+    std::stack<int> savePath(Vertex* v1);
+    void tspBT(std::stack<int> &bestPath, double &minDist);
+    void tspBTRec(int curVertex, int curIndex, double &minDist, std::stack<int> &bestPath);
 
 private:
     std::vector<Vertex *> vertexSet;

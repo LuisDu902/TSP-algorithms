@@ -1,3 +1,4 @@
+#include <stack>
 #include "Graph.h"
 
 Vertex * Graph::findVertex(const int &id) const {
@@ -21,24 +22,58 @@ std::vector<Vertex *> Graph::getVertexSet() const {
     return this->vertexSet;
 }
 
-void Graph::tspBT(std::vector<Vertex *> &bestPath) {
-    for(Vertex* v: vertexSet){
-        v->setPathCost(INF);
-        v->setPath(nullptr);
+void Graph::tspBT(std::stack<int> &bestPath, double &minDist) {
+    for(Vertex* v: vertexSet)
         v->setVisited(false);
-    }
-    Vertex* startingNode = findVertex(0);
+
+    Vertex* startingNode = vertexSet[0];
+
+    startingNode->setVisited(true);
     startingNode->setPathCost(0);
+    startingNode->setPath(nullptr);
 
-    double minDist = INF;
+    minDist = INF;
 
-    tspBTRec(0, minDist, bestPath);
+    tspBTRec(0, 0, minDist, bestPath);
 }
 
-void Graph::tspBTRec(int curIndex, double &minDist, std::vector<Vertex *> &bestPath) {
-    if (curIndex == vertexSet.size()){
-        //...
+std::stack<int> Graph::savePath(Vertex* v){
+    std::stack<int> path;
+    while (v->getPath() != nullptr) {
+        path.push(v->getId());
+        v = v->getPath()->getOrig();
+    }
+    return path;
+}
+
+void Graph::tspBTRec(int curVertex, int curIndex, double &minDist, std::stack<int> &bestPath) {
+    Vertex* v1 = findVertex(curVertex);
+
+    if (curIndex == vertexSet.size() - 1){
+        double cost = v1->getPathCost();
+        bool hasCon = false;
+        for (auto e: v1->getAdj()) {
+            if (e->getDest()->getId() == 0) {
+                hasCon = true;
+                cost += e->getDistance();
+                break;
+            }
+        }
+        if (hasCon && cost < minDist) {
+            minDist = cost;
+            bestPath = savePath(v1);
+        }
         return;
     }
-
+    for(Edge* edge : v1->getAdj()) {
+        Vertex* v2 = edge->getDest();
+        double distance = edge->getDistance();
+        if(v1->getPathCost() + distance < minDist && !v2->isVisited()) {
+            v2->setVisited(true);
+            v2->setPath(edge);
+            v2->setPathCost(v1->getPathCost() + distance);
+            tspBTRec(v2->getId(), curIndex+1,minDist,bestPath);
+            v2->setVisited(false);
+        }
+    }
 }

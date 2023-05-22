@@ -14,6 +14,8 @@
 class Supervisor{
 public:
 
+    Graph getGraph() const;
+
     Supervisor(std::string chosenGraph);
 
 private:
