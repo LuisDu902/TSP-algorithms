@@ -3,7 +3,7 @@
 Supervisor::Supervisor(std::string chosenGraph) {
     if (isRealGraph(chosenGraph)){
         createNodes(chosenGraph);
-        createGraph(chosenGraph.append("/edges.csv"));
+        createEdges(chosenGraph);
     }
     else {
         createGraph(chosenGraph);
@@ -35,6 +35,7 @@ void Supervisor::createNodes(std::string chosenGraph) {
         graph.addVertex(id, longitude, latitude);
     }
     myFile.close();
+
 }
 
 void Supervisor::createGraph(std::string chosenGraph) {
@@ -58,7 +59,40 @@ void Supervisor::createGraph(std::string chosenGraph) {
         if (graph.findVertex(orig) == nullptr) graph.addVertex(orig);
         if (graph.findVertex(dest) == nullptr) graph.addVertex(dest);
 
-        graph.addEdge(orig, dest, distance);
+        Vertex* v1 = graph.findVertex(orig);
+        Vertex* v2 = graph.findVertex(dest);
+
+        graph.addEdge(v1, v2, distance);
     }
     myFile.close();
 }
+
+
+void Supervisor::createEdges(std::string chosenGraph) {
+
+    std::ifstream myFile;
+    std::string line, field;
+    int orig, dest;
+    double distance;
+    myFile.open(chosenGraph.append("/edges.csv"));
+    getline(myFile, line);
+
+    std::vector<Vertex*> vertexSet = graph.getVertexSet();
+
+    while (getline(myFile,line)){
+        std::istringstream iss(line);
+        getline(iss,field,',');
+        orig = std::stoi(field);
+        getline(iss,field,',');
+        dest = std::stoi(field);
+        getline(iss,field,',');
+        distance = std::stod(field);
+
+        Vertex* v1 = vertexSet[orig];
+        Vertex* v2 = vertexSet[dest];
+
+        graph.addEdge(v1, v2, distance);
+    }
+    myFile.close();
+}
+

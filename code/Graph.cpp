@@ -12,11 +12,7 @@ void Graph::addVertex(const int &id, const double &longitude, const double &lati
     vertexSet.push_back(v);
 }
 
-void Graph::addEdge(const int &source, const int &dest, double distance) const{
-    auto v1 = findVertex(source);
-    auto v2 = findVertex(dest);
-    if (v1 == nullptr || v2 == nullptr)
-        return;
+void Graph::addEdge(Vertex* &v1, Vertex* &v2, double distance) const{
     v1->addEdge(v2, distance);
     v2->addEdge(v1, distance);
 }

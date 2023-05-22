@@ -138,6 +138,7 @@ void Menu::realWorldGraphs() {
     }
     supervisor = new Supervisor(filePath);
 }
+
 void Menu::end() {
     printf("\n");
     printf("\033[46m===========================================================\033[0m\n");

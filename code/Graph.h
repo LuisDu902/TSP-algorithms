@@ -8,7 +8,7 @@ public:
 
     Vertex *findVertex(const int &id) const;
     void addVertex(const int &id, const double &longitude = 0, const double &latitude = 0);
-    void addEdge(const int &source, const int &dest, double distance) const;
+    void addEdge(Vertex* &v1, Vertex* &v2, double distance) const;
 
     std::vector<Vertex *> getVertexSet() const;
 

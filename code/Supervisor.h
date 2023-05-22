@@ -20,6 +20,7 @@ private:
 
     void createGraph(std::string chosenGraph);
     void createNodes(std::string chosenGraph);
+    void createEdges(std::string chosenGraph);
     bool isRealGraph(std::string chosenGraph);
 
     Graph graph;
