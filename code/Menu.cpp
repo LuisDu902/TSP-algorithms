@@ -74,6 +74,7 @@ void Menu::toyGraphs() {
         }
     }
     supervisor = new Supervisor(filePath);
+    operations();
 }
 
 
@@ -101,6 +102,7 @@ void Menu::extraGraphs() {
         }
     }
     supervisor = new Supervisor(filePath);
+    operations();
 }
 
 void Menu::realWorldGraphs() {
@@ -137,6 +139,58 @@ void Menu::realWorldGraphs() {
         }
     }
     supervisor = new Supervisor(filePath);
+    operations();
+}
+
+void Menu::operations() {
+    std::string option;
+    while(true) {
+        std::cout << " Choose your operation?\n\n"
+                     " [1] Brute force\n"
+                     " [2] Heuristics\n"
+                     " [3] to be done\n\n"
+                     " Option: ";
+
+        std::cin >> option;
+
+        if (option == "1") {
+            bruteForce();
+        }
+        else if (option == "2") {
+            bruteForce();
+        }
+        else if (option == "3") {
+            bruteForce();
+        }
+        else if (option == "0") {
+            std::cout << "\n";
+            return;
+        }
+        else{
+            std::cout << "\n Invalid input, try again. \n\n";
+            std::cin.clear();
+            std::cin.ignore(INT_MAX, '\n');
+        }
+    }
+}
+
+void Menu::bruteForce() {
+    std::stack<int> path;
+    double dist;
+
+    std::chrono::steady_clock::time_point startTime = std::chrono::steady_clock::now();
+    supervisor->getGraph().tspBT(path, dist);
+    std::chrono::steady_clock::time_point endTime = std::chrono::steady_clock::now();
+    std::chrono::duration<double, std::milli> duration = std::chrono::duration_cast<std::chrono::duration<double, std::milli>>(endTime - startTime);
+    double time = duration.count();
+
+    std::cout << "\n Path: 0 --> ";
+    while (!path.empty()){
+        std::cout << path.top() << " --> ";
+        path.pop();
+    }
+    std::cout << "0\n Value: " << dist << '\n';
+    std::cout << " Execution Time: " << time << " milliseconds\n\n";
 }
 
 void Menu::end() {

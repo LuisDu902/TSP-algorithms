@@ -21,6 +21,10 @@ public:
     void realWorldGraphs();
     void extraGraphs();
 
+    void operations();
+
+    void bruteForce();
+
 private:
 
     Supervisor* supervisor;

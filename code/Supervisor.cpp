@@ -1,3 +1,4 @@
+#include <stack>
 #include "Supervisor.h"
 
 Supervisor::Supervisor(std::string chosenGraph) {
@@ -96,3 +97,6 @@ void Supervisor::createEdges(std::string chosenGraph) {
     myFile.close();
 }
 
+Graph Supervisor::getGraph() const{
+    return graph;
+}
