@@ -52,7 +52,6 @@ Vertex * Edge::getDest() const{
 Vertex * Edge::getOrig() const{
     return this->orig;
 }
-
 double Edge::getDistance() const{
     return this->distance;
 }
