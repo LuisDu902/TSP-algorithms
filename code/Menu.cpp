@@ -1,7 +1,6 @@
 #include "Menu.h"
 
 Menu::Menu() {
-
     printf("\n");
     printf("\033[44m===========================================================\033[0m\t\t");
     std::cout << "\n\n" << " Welcome!\n (Press [0] whenever you wish to go back)\n\n";
@@ -89,8 +88,6 @@ void Menu::extraGraphs() {
         }
         else{
             std::cout << "\n Invalid input, try again. \n";
-            std::cin.clear();
-            std::cin.ignore(INT_MAX, '\n');
         }
     }
     supervisor = new Supervisor(filePath, false);
@@ -170,6 +167,7 @@ void Menu::bruteForce() {
     supervisor->getGraph().tspBT(path, dist);
 
     std::chrono::steady_clock::time_point endTime = std::chrono::steady_clock::now();
+
     std::chrono::duration<double, std::milli> duration = std::chrono::duration_cast<std::chrono::duration<double, std::milli>>(endTime - startTime);
 
     double time = duration.count();

@@ -74,7 +74,7 @@ public:
      * @param minDist Minimum distance of the best path found.
      *
      * @par Time complexity
-     * O((V * E )!), where V is the number of vertexes and E the number of edges in the graph.
+     * O(V! + E), where V is the number of vertexes and E the number of edges in the graph.
      */
     void tspBT(std::stack<int> &bestPath, double &minDist);
 
@@ -90,7 +90,7 @@ public:
      * @param bestPath The stack that stores the vertex IDs of the best path found.
      *
      * @par Time complexity
-     * O((V * E)!), where V is the number of vertexes and E the number of edges in the graph.
+     * O(V! + E), where V is the number of vertexes and E the number of edges in the graph.
      */
     void tspBTRec(int curVertex, int curIndex, double &minDist, std::stack<int> &bestPath);
 
