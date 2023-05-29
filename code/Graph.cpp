@@ -1,4 +1,3 @@
-#include <stack>
 #include "Graph.h"
 
 Vertex * Graph::findVertex(const int &id) const {
@@ -22,6 +21,15 @@ std::vector<Vertex *> Graph::getVertexSet() const {
     return this->vertexSet;
 }
 
+std::stack<int> Graph::savePath(Vertex* v){
+    std::stack<int> path;
+    while (v->getPath() != nullptr) {
+        path.push(v->getId());
+        v = v->getPath()->getOrig();
+    }
+    return path;
+}
+
 void Graph::tspBT(std::stack<int> &bestPath, double &minDist) {
     for(Vertex* v: vertexSet)
         v->setVisited(false);
@@ -35,15 +43,6 @@ void Graph::tspBT(std::stack<int> &bestPath, double &minDist) {
     minDist = INF;
 
     tspBTRec(0, 0, minDist, bestPath);
-}
-
-std::stack<int> Graph::savePath(Vertex* v){
-    std::stack<int> path;
-    while (v->getPath() != nullptr) {
-        path.push(v->getId());
-        v = v->getPath()->getOrig();
-    }
-    return path;
 }
 
 void Graph::tspBTRec(int curVertex, int curIndex, double &minDist, std::stack<int> &bestPath) {
@@ -68,7 +67,7 @@ void Graph::tspBTRec(int curVertex, int curIndex, double &minDist, std::stack<in
     for(Edge* edge : v1->getAdj()) {
         Vertex* v2 = edge->getDest();
         double distance = edge->getDistance();
-        if(v1->getPathCost() + distance < minDist && !v2->isVisited()) {
+        if(!v2->isVisited() && v1->getPathCost() + distance < minDist) {
             v2->setVisited(true);
             v2->setPath(edge);
             v2->setPathCost(v1->getPathCost() + distance);

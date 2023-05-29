@@ -1,19 +1,13 @@
-#include <stack>
 #include "Supervisor.h"
 
-Supervisor::Supervisor(std::string chosenGraph) {
-    if (isRealGraph(chosenGraph)){
-        createNodes(chosenGraph);
-        createEdges(chosenGraph);
+Supervisor::Supervisor(std::string path, bool isRealGraph) {
+    if (isRealGraph){
+        createNodes(path);
+        createEdges(path);
     }
     else {
-        createGraph(chosenGraph);
+        createGraph(path);
     }
-}
-
-bool Supervisor::isRealGraph(std::string chosenGraph){
-    chosenGraph.pop_back();
-    return chosenGraph == "../data/Real-world Graphs/graph";
 }
 
 void Supervisor::createNodes(std::string chosenGraph) {
@@ -36,11 +30,9 @@ void Supervisor::createNodes(std::string chosenGraph) {
         graph.addVertex(id, longitude, latitude);
     }
     myFile.close();
-
 }
 
 void Supervisor::createGraph(std::string chosenGraph) {
-
     std::ifstream myFile;
     std::string line, field;
     int orig, dest;
@@ -57,11 +49,11 @@ void Supervisor::createGraph(std::string chosenGraph) {
         getline(iss,field,',');
         distance = std::stod(field);
 
-        if (graph.findVertex(orig) == nullptr) graph.addVertex(orig);
-        if (graph.findVertex(dest) == nullptr) graph.addVertex(dest);
-
         Vertex* v1 = graph.findVertex(orig);
         Vertex* v2 = graph.findVertex(dest);
+
+        if (v1 == nullptr) graph.addVertex(orig);
+        if (v2 == nullptr) graph.addVertex(dest);
 
         graph.addEdge(v1, v2, distance);
     }

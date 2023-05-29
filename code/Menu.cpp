@@ -8,7 +8,7 @@ Menu::Menu() {
 }
 
 void Menu::init() {
-    std::string option;
+    int option;
     while(true) {
         std::cout << " Choose your graph?\n\n"
                      " [1] Toy-Graphs\n"
@@ -17,31 +17,26 @@ void Menu::init() {
                      " [4] Exit\n\n Option: ";
 
         std::cin >> option;
-
-        if (option == "1") {
-            toyGraphs();
-        }
-        else if (option == "2") {
-            realWorldGraphs();
-        }
-        else if (option == "3") {
-            extraGraphs();
-        }
-        else if (option == "4") {
-            return;
-        }
-        else if (option == "0")
-            std::cout << "\n You can't go back any further!\n\n";
-        else{
-            std::cout << "\n Invalid input, try again. \n\n";
-            std::cin.clear();
-            std::cin.ignore(INT_MAX, '\n');
+        switch (option) {
+            case 1:
+                toyGraphs();
+                break;
+            case 2:
+                realWorldGraphs();
+                break;
+            case 3:
+                extraGraphs();
+                break;
+            case 4:
+                return;
+            default:
+                std::cout << "\n Invalid input, try again. \n\n";
         }
     }
 }
 
 void Menu::toyGraphs() {
-    std::string option;
+    int option;
     std::string filePath = "../data/Toy-Graphs/";
     while(true){
         std::cout << "\n What graph?\n\n"
@@ -51,36 +46,33 @@ void Menu::toyGraphs() {
                      " Option: ";
 
         std::cin >> option;
-        if (option == "1"){
-           filePath.append("shipping.csv");
-           break;
+        switch (option) {
+            case 1:
+                filePath.append("shipping.csv");
+                break;
+            case 2:
+                filePath.append("stadiums.csv");
+                break;
+            case 3:
+                filePath.append("tourism.csv");
+                break;
+            case 0:
+                std::cout << "\n";
+                return;
+            default:
+                std::cout << "\n Invalid input, try again. \n";
+                continue;
         }
-        else if (option == "2"){
-            filePath.append("stadiums.csv");
-            break;
-        }
-        else if (option == "3"){
-            filePath.append("tourism.csv");
-            break;
-        }
-        else if (option == "0"){
-            std::cout << "\n";
-            return;
-        }
-        else{
-            std::cout << "\n Invalid input, try again. \n";
-            std::cin.clear();
-            std::cin.ignore(INT_MAX, '\n');
-        }
+        break;
     }
-    supervisor = new Supervisor(filePath);
+    supervisor = new Supervisor(filePath, false);
     operations();
 }
 
 
 void Menu::extraGraphs() {
-    std::string option;
-    std::unordered_set<std::string> s{"25", "50", "75", "100", "200", "300", "400", "500", "600", "700", "800", "900"};
+    int option;
+    std::unordered_set<int> s{25, 50, 75, 100, 200, 300, 400, 500, 600, 700, 800, 900};
     std::string filePath = "../data/Extra_Fully_Connected_Graphs/edges_";
     while(true){
         std::cout << "\n Choose the number of nodes\n\n"
@@ -88,10 +80,10 @@ void Menu::extraGraphs() {
 
         std::cin >> option;
         if (s.find(option) != s.end()){
-            filePath.append(option).append(".csv");
+            filePath.append(std::to_string(option)).append(".csv");
             break;
         }
-        else if (option == "0"){
+        else if (option == 0){
             std::cout << "\n";
             return;
         }
@@ -101,12 +93,12 @@ void Menu::extraGraphs() {
             std::cin.ignore(INT_MAX, '\n');
         }
     }
-    supervisor = new Supervisor(filePath);
+    supervisor = new Supervisor(filePath, false);
     operations();
 }
 
 void Menu::realWorldGraphs() {
-    std::string option;
+    int option;
     std::string filePath = "../data/Real-world Graphs/";
     while(true){
         std::cout << "\n What graph?\n\n"
@@ -116,34 +108,31 @@ void Menu::realWorldGraphs() {
                      " Option: ";
 
         std::cin >> option;
-        if (option == "1"){
-            filePath.append("graph1");
-            break;
+        switch (option) {
+            case 1:
+                filePath.append("graph1");
+                break;
+            case 2:
+                filePath.append("graph2");
+                break;
+            case 3:
+                filePath.append("graph3");
+                break;
+            case 0:
+                std::cout << "\n";
+                return;
+            default:
+                std::cout << "\n Invalid input, try again. \n";
+                continue;
         }
-        else if (option == "2"){
-            filePath.append("graph2");
-            break;
-        }
-        else if (option == "3"){
-            filePath.append("graph3");
-            break;
-        }
-        else if (option == "0"){
-            std::cout << "\n";
-            return;
-        }
-        else{
-            std::cout << "\n Invalid input, try again. \n";
-            std::cin.clear();
-            std::cin.ignore(INT_MAX, '\n');
-        }
+        break;
     }
-    supervisor = new Supervisor(filePath);
+    supervisor = new Supervisor(filePath, true);
     operations();
 }
 
 void Menu::operations() {
-    std::string option;
+    int option;
     while(true) {
         std::cout << " Choose your operation?\n\n"
                      " [1] Brute force\n"
@@ -152,24 +141,22 @@ void Menu::operations() {
                      " Option: ";
 
         std::cin >> option;
-
-        if (option == "1") {
-            bruteForce();
-        }
-        else if (option == "2") {
-            bruteForce();
-        }
-        else if (option == "3") {
-            bruteForce();
-        }
-        else if (option == "0") {
-            std::cout << "\n";
-            return;
-        }
-        else{
-            std::cout << "\n Invalid input, try again. \n\n";
-            std::cin.clear();
-            std::cin.ignore(INT_MAX, '\n');
+        switch (option) {
+            case 1:
+                bruteForce();
+                break;
+            case 2:
+                bruteForce();
+                break;
+            case 3:
+                bruteForce();
+                break;
+            case 0:
+                std::cout << "\n";
+                return;
+            default:
+                std::cout << "\n Invalid input, try again. \n\n";
+                continue;
         }
     }
 }
@@ -179,9 +166,12 @@ void Menu::bruteForce() {
     double dist;
 
     std::chrono::steady_clock::time_point startTime = std::chrono::steady_clock::now();
+
     supervisor->getGraph().tspBT(path, dist);
+
     std::chrono::steady_clock::time_point endTime = std::chrono::steady_clock::now();
     std::chrono::duration<double, std::milli> duration = std::chrono::duration_cast<std::chrono::duration<double, std::milli>>(endTime - startTime);
+
     double time = duration.count();
 
     std::cout << "\n Path: 0 --> ";
@@ -189,7 +179,7 @@ void Menu::bruteForce() {
         std::cout << path.top() << " --> ";
         path.pop();
     }
-    std::cout << "0\n Value: " << dist << '\n';
+    std::cout << "0\n Distance: " << dist << '\n';
     std::cout << " Execution Time: " << time << " milliseconds\n\n";
 }
 
