@@ -5,6 +5,7 @@
 #include <vector>
 #include <limits>
 #include <algorithm>
+#include "MutablePriorityQueue.h"
 
 #define INF std::numeric_limits<int>::max()
 
@@ -15,6 +16,7 @@ class Edge;
 class Vertex {
 public:
     Vertex(int id, double longitude, double latitude);
+    bool operator<(Vertex & vertex) const;
 
     void addEdge(Vertex *d, double distance);
 
@@ -28,7 +30,9 @@ public:
     void setPathCost(double pathCost);
     void setPath(Edge *path);
 
-private:
+    friend class MutablePriorityQueue<Vertex>;
+
+protected:
     int id;
     std::vector<Edge *> adj;
     bool visited = false;
@@ -36,6 +40,7 @@ private:
     double latitude;
     double pathCost = 0;
     Edge *path = nullptr;
+    int queueIndex = 0;
 };
 
 /********************** Edge ****************************/
@@ -49,7 +54,7 @@ public:
 
     double getDistance() const;
 
-private:
+protected:
     Vertex * dest;
     Vertex *orig;
     double distance;

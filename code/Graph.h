@@ -3,6 +3,8 @@
 
 #include "VertexEdge.h"
 #include <stack>
+#include <cmath>
+
 class Graph {
 public:
 
@@ -93,7 +95,8 @@ public:
      * O(V!), where V is the number of vertexes in the graph.
      */
     void tspBTRec(int curVertex, int curIndex, double &minDist, std::stack<int> &bestPath);
-
+    std::vector<Vertex *> prim();
+    double distance(double lat1, double lon1, double lat2, double lon2);
 private:
     std::vector<Vertex *> vertexSet;
 };
