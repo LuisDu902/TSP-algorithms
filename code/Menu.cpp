@@ -147,10 +147,11 @@ void Menu::operations() {
                 supervisor->getGraph().prim();
                 auto test=supervisor->getGraph().preOrderTraversal();
                 double  sum=0;
-                for(int i=0;i<test.size()-1;i++){
-                    sum+=supervisor->getGraph().getDistance(test[i],test[i+1]);
+                for (int i = 0; i < test.size(); i++){
+                    Vertex* cur = test[i];
+                    Vertex* next = test[(i+1)%test.size()];
+                    sum+= supervisor->getGraph().getDistance(cur, next);
                 }
-                sum+=supervisor->getGraph().getDistance(test[test.size()-1],test[0]);
                 std::cout << sum;
                 break;
             }
