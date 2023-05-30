@@ -32,6 +32,10 @@ public:
 
     friend class MutablePriorityQueue<Vertex>;
 
+    double getLatitude();
+
+    double getLongitude();
+
 protected:
     int id;
     std::vector<Edge *> adj;
@@ -41,6 +45,7 @@ protected:
     double pathCost = 0;
     Edge *path = nullptr;
     int queueIndex = 0;
+
 };
 
 /********************** Edge ****************************/
@@ -53,11 +58,13 @@ public:
     Vertex * getOrig() const;
 
     double getDistance() const;
+    bool operator==(const Edge& edge) const;
 
 protected:
     Vertex * dest;
     Vertex *orig;
     double distance;
+
 };
 
 #endif //DA_VERTEXEDGE_H

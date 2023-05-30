@@ -127,3 +127,27 @@ double Graph::distance(double lat1, double lon1, double lat2, double lon2) {
 
 }
 
+void Graph::preOrder(Vertex* vertex, std::vector<Vertex *> &l) {
+    l.push_back(vertex);
+    for (Edge* edge : vertex->getAdj()) {
+        Edge* path = edge->getDest()->getPath();
+        if (path != nullptr && edge == path)
+            preOrder(edge->getDest(),l);
+    }
+}
+
+
+std::vector<Vertex *> Graph::preOrderTraversal() {
+    std::vector<Vertex *> l;
+    Vertex* startingNode = vertexSet[0];
+    preOrder(startingNode,l);
+    return l;
+}
+
+double Graph::getDistance(Vertex* v1, Vertex* v2){
+    for (Edge* e: v1->getAdj())
+        if (e->getDest() == v2)
+            return e->getDistance();
+    return distance(v1->getLatitude(),v1->getLongitude(),v2->getLatitude(),v2->getLongitude());
+}
+

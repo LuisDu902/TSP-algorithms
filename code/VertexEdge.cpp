@@ -45,6 +45,14 @@ void Vertex::setPath(Edge *path) {
     this->path = path;
 }
 
+double Vertex::getLatitude() {
+    return this->latitude;
+}
+
+double Vertex::getLongitude() {
+    return this->longitude;
+}
+
 
 /********************** Edge ****************************/
 
@@ -58,4 +66,7 @@ Vertex * Edge::getOrig() const{
 }
 double Edge::getDistance() const{
     return this->distance;
+}
+bool Edge::operator==(const Edge& edge) const {
+    return (dest == edge.dest) && (orig == edge.orig) && (distance == edge.distance);
 }
