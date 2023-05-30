@@ -100,4 +100,5 @@ public:
 private:
     std::vector<Vertex *> vertexSet;
 };
+
 #endif //DA_GRAPH_H
