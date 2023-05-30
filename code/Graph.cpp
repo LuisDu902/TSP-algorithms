@@ -108,6 +108,9 @@ std::vector<Vertex *> Graph::prim() {
 }
 
 
+
+
+
 double Graph::distance(double lat1, double lon1, double lat2, double lon2) {
     double dLat = (lat2 - lat1) * M_PI / 180.0;
     double dLon = (lon2 - lon1) * M_PI / 180.0;
@@ -123,3 +126,4 @@ double Graph::distance(double lat1, double lon1, double lat2, double lon2) {
     return rad * c;
 
 }
+
