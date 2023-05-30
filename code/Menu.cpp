@@ -2,7 +2,7 @@
 
 Menu::Menu() {
     printf("\n");
-    printf("\033[44m===========================================================\033[0m\t\t");
+    printf("===========================================================");
     std::cout << "\n\n" << " Welcome!\n (Press [0] whenever you wish to go back)\n\n";
 }
 
@@ -28,8 +28,6 @@ void Menu::init() {
                 break;
             case 4:
                 return;
-            case 0:
-                std::cout << "\n It's not possible to go back! \n\n";
             default:
                 std::cout << "\n Invalid input, try again. \n\n";
         }
@@ -185,5 +183,5 @@ void Menu::bruteForce() {
 
 void Menu::end() {
     printf("\n");
-    printf("\033[46m===========================================================\033[0m\n");
+    printf("===========================================================");
 }
