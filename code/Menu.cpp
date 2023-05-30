@@ -28,6 +28,8 @@ void Menu::init() {
                 break;
             case 4:
                 return;
+            case 0:
+                std::cout << "\n It's not possible to go back! \n\n";
             default:
                 std::cout << "\n Invalid input, try again. \n\n";
         }

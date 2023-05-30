@@ -52,8 +52,14 @@ void Supervisor::createGraph(std::string chosenGraph) {
         Vertex* v1 = graph.findVertex(orig);
         Vertex* v2 = graph.findVertex(dest);
 
-        if (v1 == nullptr) graph.addVertex(orig);
-        if (v2 == nullptr) graph.addVertex(dest);
+        if (v1 == nullptr) {
+            graph.addVertex(orig);
+            v1 = graph.getVertexSet().back();
+        }
+        if (v2 == nullptr) {
+            graph.addVertex(dest);
+            v2 = graph.getVertexSet().back();
+        }
 
         graph.addEdge(v1, v2, distance);
     }
