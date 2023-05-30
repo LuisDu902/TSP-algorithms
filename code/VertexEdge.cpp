@@ -9,6 +9,10 @@ void Vertex::addEdge(Vertex *d, double distance) {
     adj.push_back(newEdge);
 }
 
+bool Vertex::operator<(Vertex & vertex) const {
+    return this->pathCost < vertex.pathCost;
+}
+
 int Vertex::getId() const{
     return this->id;
 }

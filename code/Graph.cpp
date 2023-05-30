@@ -77,3 +77,50 @@ void Graph::tspBTRec(int curVertex, int curIndex, double &minDist, std::stack<in
         }
     }
 }
+
+std::vector<Vertex *> Graph::prim() {
+    if (vertexSet.empty()) return this->vertexSet;
+    for (auto v: vertexSet){
+        v->setVisited(false);
+        v->setPath(nullptr);
+        v->setPathCost(INF);
+    }
+    MutablePriorityQueue<Vertex> q;
+
+    vertexSet[0]->setPathCost(0);
+    q.insert(vertexSet[0]);
+    while(!q.empty()){
+        auto u = q.extractMin();
+        u->setVisited(true);
+        for (auto e : u->getAdj()){
+            auto w = e->getDest();
+            if (!w->isVisited()){
+                auto oldDist = e->getDest()->getPathCost();
+                if (e->getDistance() < oldDist){
+                    w->setPathCost(e->getDistance());
+                    w->setPath(e);
+                    if (oldDist == INF) q.insert(w);
+                    else q.decreaseKey(w);
+                }
+            }
+        }
+    }
+    return this->vertexSet;
+}
+
+
+double Graph::distance(double lat1, double lon1, double lat2, double lon2) {
+    double dLat = (lat2 - lat1) * M_PI / 180.0;
+    double dLon = (lon2 - lon1) * M_PI / 180.0;
+
+    // convert to radians
+    lat1 = (lat1) * M_PI / 180.0;
+    lat2 = (lat2) * M_PI / 180.0;
+
+    // apply formulae
+    double a = pow(sin(dLat / 2), 2) + pow(sin(dLon / 2), 2) * cos(lat1) * cos(lat2);
+    double rad = 6371;
+    double c = 2 * asin(sqrt(a));
+    return rad * c;
+
+}
