@@ -143,8 +143,10 @@ void Menu::operations() {
                 bruteForce();
                 break;
             case 2:
-                bruteForce();
+            {
+                triangularApproximation();
                 break;
+            }
             case 3:
                 bruteForce();
                 break;
@@ -160,7 +162,7 @@ void Menu::operations() {
 
 void Menu::bruteForce() {
     std::stack<int> path;
-    double dist;
+    double dist = 0;
 
     std::chrono::steady_clock::time_point startTime = std::chrono::steady_clock::now();
 
@@ -177,6 +179,28 @@ void Menu::bruteForce() {
         std::cout << path.top() << " --> ";
         path.pop();
     }
+    std::cout << "0\n Distance: " << dist << '\n';
+    std::cout << " Execution Time: " << time << " milliseconds\n\n";
+}
+
+void Menu::triangularApproximation(){
+    std::vector<Vertex*> tour;
+    double dist = 0;
+
+    std::chrono::steady_clock::time_point startTime = std::chrono::steady_clock::now();
+
+    supervisor->getGraph().triangularApproximation(tour, dist);
+
+    std::chrono::steady_clock::time_point endTime = std::chrono::steady_clock::now();
+
+    std::chrono::duration<double, std::milli> duration = std::chrono::duration_cast<std::chrono::duration<double, std::milli>>(endTime - startTime);
+
+    double time = duration.count();
+
+    std::cout << "\n ";
+    for (Vertex* v : tour)
+        std::cout << v->getId() << " --> ";
+
     std::cout << "0\n Distance: " << dist << '\n';
     std::cout << " Execution Time: " << time << " milliseconds\n\n";
 }

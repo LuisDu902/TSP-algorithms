@@ -19,9 +19,11 @@ public:
     bool operator<(Vertex & vertex) const;
 
     void addEdge(Vertex *d, double distance);
+    void addMstEdge(Vertex *d, double distance);
 
     int getId() const;
     std::vector<Edge *> getAdj() const;
+    std::vector<Edge *> getMstAdj() const;
     double getPathCost() const;
     Edge* getPath() const;
     bool isVisited() const;
@@ -32,15 +34,22 @@ public:
 
     friend class MutablePriorityQueue<Vertex>;
 
+    double getLatitude();
+
+    double getLongitude();
+
 protected:
     int id;
     std::vector<Edge *> adj;
+    std::vector<Edge *> mstAdj;
     bool visited = false;
     double longitude;
     double latitude;
     double pathCost = 0;
+    int degree = 0;
     Edge *path = nullptr;
     int queueIndex = 0;
+
 };
 
 /********************** Edge ****************************/
@@ -51,13 +60,12 @@ public:
 
     Vertex * getDest() const;
     Vertex * getOrig() const;
-
     double getDistance() const;
-
 protected:
     Vertex * dest;
     Vertex *orig;
     double distance;
+
 };
 
 #endif //DA_VERTEXEDGE_H

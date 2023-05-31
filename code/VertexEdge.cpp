@@ -9,6 +9,13 @@ void Vertex::addEdge(Vertex *d, double distance) {
     adj.push_back(newEdge);
 }
 
+void Vertex::addMstEdge(Vertex *d, double distance) {
+    Edge* newEdge = new Edge(this, d, distance);
+    mstAdj.push_back(newEdge);
+    degree++;
+}
+
+
 bool Vertex::operator<(Vertex & vertex) const {
     return this->pathCost < vertex.pathCost;
 }
@@ -19,6 +26,10 @@ int Vertex::getId() const{
 
 std::vector<Edge *> Vertex::getAdj() const{
     return this->adj;
+}
+
+std::vector<Edge *> Vertex::getMstAdj() const{
+    return this->mstAdj;
 }
 
 double Vertex::getPathCost() const {
@@ -43,6 +54,14 @@ void Vertex::setPathCost(double pathCost) {
 
 void Vertex::setPath(Edge *path) {
     this->path = path;
+}
+
+double Vertex::getLatitude() {
+    return this->latitude;
+}
+
+double Vertex::getLongitude() {
+    return this->longitude;
 }
 
 
