@@ -4,6 +4,7 @@
 #include "VertexEdge.h"
 #include <stack>
 #include <cmath>
+#include <climits>
 
 class Graph {
 public:
@@ -99,12 +100,17 @@ public:
     void triangularApproximation(std::vector<Vertex*> &tour, double &dist);
 
     std::vector<Vertex *> prim();
+
     double haversine(double lat1, double lon1, double lat2, double lon2);
 
-
     std::vector<Vertex *> preOrderTraversal();
+  
     void preOrder(Vertex *vertex, std::vector<Vertex *> &l);
+  
     double distance(Vertex *v1, Vertex *v2);
+  
+  void nearestNeighborTSP(std::vector<Vertex *> &tour, double &distance);
+
 private:
     std::vector<Vertex *> vertexSet;
 

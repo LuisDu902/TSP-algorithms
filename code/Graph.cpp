@@ -172,3 +172,35 @@ double Graph::distance(Vertex* v1, Vertex* v2){
     return haversine(v1->getLatitude(),v1->getLongitude(),v2->getLatitude(),v2->getLongitude());
 }
 
+
+void Graph::nearestNeighborTSP(std::vector<Vertex *> &tour, double &distance) {
+    for (auto v : vertexSet) v->setVisited(false);
+    Vertex* startingVertex = vertexSet[0];
+    startingVertex->setVisited(true);
+
+    Vertex* currentVertex = startingVertex;
+    while(true){
+        tour.push_back(currentVertex);
+        double minDist = INT_MAX;
+        Vertex* nextVertex = nullptr;
+        for (auto e : currentVertex->getAdj()){
+            Vertex* neighbor = e->getDest();
+            if (!neighbor->isVisited()){
+                double dist = e->getDistance();
+                if (dist < minDist){
+                    minDist = dist;
+                    nextVertex = neighbor;
+                }
+            }
+        }
+        if (nextVertex == nullptr) break;
+        nextVertex->setVisited(true);
+        distance += minDist;
+        currentVertex = nextVertex;
+    }
+    if (currentVertex->getPath() == nullptr) {
+        printf("Not a Hamiltonian path, sorry.");
+    }
+    else distance += currentVertex->getPath()->getDistance();
+
+}

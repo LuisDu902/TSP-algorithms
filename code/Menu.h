@@ -63,6 +63,7 @@ public:
      */
     void bruteForce();
 
+    void nearestNeighbor();
 private:
 
     Supervisor* supervisor;
