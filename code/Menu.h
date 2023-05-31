@@ -67,5 +67,6 @@ private:
 
     Supervisor* supervisor;
 
+    void triangularApproximation();
 };
 #endif //DA_MENU_H

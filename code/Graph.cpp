@@ -91,7 +91,10 @@ std::vector<Vertex *> Graph::prim() {
     while(!q.empty()){
         auto u = q.extractMin();
         u->setVisited(true);
-        for (auto e : u->getAdj()){
+        if (u->getPath() != nullptr){
+            u->updateMst();
+        }
+           for (auto e : u->getAdj()){
             auto w = e->getDest();
             if (!w->isVisited()){
                 auto oldDist = e->getDest()->getPathCost();
@@ -107,11 +110,19 @@ std::vector<Vertex *> Graph::prim() {
     return this->vertexSet;
 }
 
+void Graph::triangularApproximation(std::vector<Vertex*> &tour, double &dist) {
+    prim();
+    tour = preOrderTraversal();
+    for (int i = 0; i < tour.size(); i++){
+        Vertex* cur = tour[i];
+        Vertex* next = tour[(i+1)%tour.size()];
+        dist += distance(cur, next);
+    }
+}
 
 
 
-
-double Graph::distance(double lat1, double lon1, double lat2, double lon2) {
+double Graph::haversine(double lat1, double lon1, double lat2, double lon2) {
     double dLat = (lat2 - lat1) * M_PI / 180.0;
     double dLon = (lon2 - lon1) * M_PI / 180.0;
 
@@ -119,7 +130,7 @@ double Graph::distance(double lat1, double lon1, double lat2, double lon2) {
     lat1 = (lat1) * M_PI / 180.0;
     lat2 = (lat2) * M_PI / 180.0;
 
-    // apply formulae
+    // apply formula
     double a = pow(sin(dLat / 2), 2) + pow(sin(dLon / 2), 2) * cos(lat1) * cos(lat2);
     double rad = 6371;
     double c = 2 * asin(sqrt(a));
@@ -129,9 +140,10 @@ double Graph::distance(double lat1, double lon1, double lat2, double lon2) {
 
 void Graph::preOrder(Vertex* vertex, std::vector<Vertex *> &l) {
     l.push_back(vertex);
-    for (Edge* edge : vertex->getAdj()) {
-        Edge* path = edge->getDest()->getPath();
-        if (path != nullptr && edge == path)
+    vertex->setVisited(true);
+    for (Edge* edge : vertex->getMstAdj()) {
+        Vertex* w = edge->getDest();
+        if (!w->isVisited())
             preOrder(edge->getDest(),l);
     }
 }
@@ -139,15 +151,20 @@ void Graph::preOrder(Vertex* vertex, std::vector<Vertex *> &l) {
 
 std::vector<Vertex *> Graph::preOrderTraversal() {
     std::vector<Vertex *> l;
+
+    for (auto v : vertexSet)
+        v->setVisited(false);
+
     Vertex* startingNode = vertexSet[0];
+
     preOrder(startingNode,l);
     return l;
 }
 
-double Graph::getDistance(Vertex* v1, Vertex* v2){
+double Graph::distance(Vertex* v1, Vertex* v2){
     for (Edge* e: v1->getAdj())
         if (e->getDest() == v2)
             return e->getDistance();
-    return distance(v1->getLatitude(),v1->getLongitude(),v2->getLatitude(),v2->getLongitude());
+    return haversine(v1->getLatitude(),v1->getLongitude(),v2->getLatitude(),v2->getLongitude());
 }
 

@@ -19,9 +19,10 @@ public:
     bool operator<(Vertex & vertex) const;
 
     void addEdge(Vertex *d, double distance);
-
+    void updateMst();
     int getId() const;
     std::vector<Edge *> getAdj() const;
+    std::vector<Edge *> getMstAdj() const;
     double getPathCost() const;
     Edge* getPath() const;
     bool isVisited() const;
@@ -39,6 +40,7 @@ public:
 protected:
     int id;
     std::vector<Edge *> adj;
+    std::vector<Edge *> mstAdj;
     bool visited = false;
     double longitude;
     double latitude;
@@ -56,10 +58,7 @@ public:
 
     Vertex * getDest() const;
     Vertex * getOrig() const;
-
     double getDistance() const;
-    bool operator==(const Edge& edge) const;
-
 protected:
     Vertex * dest;
     Vertex *orig;

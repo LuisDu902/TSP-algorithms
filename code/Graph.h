@@ -95,12 +95,16 @@ public:
      * O(V!), where V is the number of vertexes in the graph.
      */
     void tspBTRec(int curVertex, int curIndex, double &minDist, std::stack<int> &bestPath);
+
+    void triangularApproximation(std::vector<Vertex*> &tour, double &dist);
+
     std::vector<Vertex *> prim();
-    double distance(double lat1, double lon1, double lat2, double lon2);
+    double haversine(double lat1, double lon1, double lat2, double lon2);
+
 
     std::vector<Vertex *> preOrderTraversal();
     void preOrder(Vertex *vertex, std::vector<Vertex *> &l);
-    double getDistance(Vertex *v1, Vertex *v2);
+    double distance(Vertex *v1, Vertex *v2);
 private:
     std::vector<Vertex *> vertexSet;
 

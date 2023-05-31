@@ -144,15 +144,7 @@ void Menu::operations() {
                 break;
             case 2:
             {
-                supervisor->getGraph().prim();
-                auto test=supervisor->getGraph().preOrderTraversal();
-                double  sum=0;
-                for (int i = 0; i < test.size(); i++){
-                    Vertex* cur = test[i];
-                    Vertex* next = test[(i+1)%test.size()];
-                    sum+= supervisor->getGraph().getDistance(cur, next);
-                }
-                std::cout << sum;
+                triangularApproximation();
                 break;
             }
             case 3:
@@ -170,7 +162,7 @@ void Menu::operations() {
 
 void Menu::bruteForce() {
     std::stack<int> path;
-    double dist;
+    double dist = 0;
 
     std::chrono::steady_clock::time_point startTime = std::chrono::steady_clock::now();
 
@@ -187,6 +179,28 @@ void Menu::bruteForce() {
         std::cout << path.top() << " --> ";
         path.pop();
     }
+    std::cout << "0\n Distance: " << dist << '\n';
+    std::cout << " Execution Time: " << time << " milliseconds\n\n";
+}
+
+void Menu::triangularApproximation(){
+    std::vector<Vertex*> tour;
+    double dist = 0;
+
+    std::chrono::steady_clock::time_point startTime = std::chrono::steady_clock::now();
+
+    supervisor->getGraph().triangularApproximation(tour, dist);
+
+    std::chrono::steady_clock::time_point endTime = std::chrono::steady_clock::now();
+
+    std::chrono::duration<double, std::milli> duration = std::chrono::duration_cast<std::chrono::duration<double, std::milli>>(endTime - startTime);
+
+    double time = duration.count();
+
+    std::cout << "\n ";
+    for (Vertex* v : tour)
+        std::cout << v->getId() << " --> ";
+
     std::cout << "0\n Distance: " << dist << '\n';
     std::cout << " Execution Time: " << time << " milliseconds\n\n";
 }
