@@ -3,6 +3,7 @@
 
 #include "VertexEdge.h"
 #include <stack>
+#include <queue>
 #include <cmath>
 #include <climits>
 
@@ -56,16 +57,16 @@ public:
     /**
      * @brief Saves the path from a specified vertex to the source vertex as a stack of vertex IDs.
      *
-     * This function traverses the path from the specified vertex to the source vertex and saves the vertex IDs in a stack.
+     * This function traverses the path from the specified vertex to the source vertex and saves the vertexes in a stack.
      *
      * @param v1 A pointer to the vertex from which to start traversing the path.
      *
-     * @return A stack of vertex IDs representing the path from the specified vertex to the source vertex (0).
+     * @return A stack of vertexes representing the path.
      *
      * @par Time complexity
      * O(n), where n is the length of the path from the specified vertex to the source vertex.
      */
-    std::stack<int> savePath(Vertex* v1);
+    std::stack<Vertex*> savePath(Vertex* v1);
 
     /**
      * @brief Solves the Traveling Salesman Problem (TSP) using backtracking.
@@ -73,13 +74,13 @@ public:
      * This function applies the backtracking algorithm to solve the TSP on the graph.
      * It finds the shortest Hamiltonian cycle that visits all vertices exactly once.
      *
-     * @param bestPath Stack that will store the vertex IDs of the best path found.
+     * @param bestPath Stack that will store the vertexes of the best path found.
      * @param minDist Minimum distance of the best path found.
      *
      * @par Time complexity
      * O(V!), where V is the number of vertexes in the graph.
      */
-    void tspBT(std::stack<int> &bestPath, double &minDist);
+    void tspBT(std::stack<Vertex*> &bestPath, double &minDist);
 
     /**
      * @brief Recursive function for the TSP backtracking algorithm.
@@ -90,26 +91,26 @@ public:
      * @param curVertex The ID of the current vertex being visited.
      * @param curIndex The index of the current vertex in the path.
      * @param minDist The minimum distance found so far.
-     * @param bestPath The stack that stores the vertex IDs of the best path found.
+     * @param bestPath The stack that stores the vertexes of the best path found.
      *
      * @par Time complexity
      * O(V!), where V is the number of vertexes in the graph.
      */
-    void tspBTRec(int curVertex, int curIndex, double &minDist, std::stack<int> &bestPath);
+    void tspBTRec(int curVertex, int curIndex, double &minDist, std::stack<Vertex*> &bestPath);
 
-    void triangularApproximation(std::vector<Vertex*> &tour, double &dist);
+    void triangularApproximation(std::queue<Vertex*> &tour, double &dist);
 
-    std::vector<Vertex *> prim();
+    void prim();
 
     double haversine(double lat1, double lon1, double lat2, double lon2);
 
-    std::vector<Vertex *> preOrderTraversal();
+    std::queue<Vertex *> preOrderTraversal();
   
-    void preOrder(Vertex *vertex, std::vector<Vertex *> &l);
+    void preOrder(Vertex *vertex, std::queue<Vertex *> &l);
   
     double distance(Vertex *v1, Vertex *v2);
   
-  void nearestNeighborTSP(std::vector<Vertex *> &tour, double &distance);
+    void nearestNeighborTSP(std::vector<Vertex *> &tour, double &distance);
 
 private:
     std::vector<Vertex *> vertexSet;

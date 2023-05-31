@@ -161,7 +161,7 @@ void Menu::operations() {
 }
 
 void Menu::bruteForce() {
-    std::stack<int> path;
+    std::stack<Vertex*> path;
     double dist = 0;
 
     std::chrono::steady_clock::time_point startTime = std::chrono::steady_clock::now();
@@ -174,23 +174,23 @@ void Menu::bruteForce() {
 
     double time = duration.count();
 
-    std::cout << "\n Path: 0 --> ";
+    std::cout << "\n Path: ";
     while (!path.empty()){
-        std::cout << path.top() << " --> ";
+        std::cout << path.top()->getId() << " ";
         path.pop();
     }
-    std::cout << "0\n Distance: " << dist << '\n';
+    std::cout << "\n Distance: " << dist << '\n';
     std::cout << " Execution Time: " << time << " milliseconds\n\n";
 }
 
 
 void Menu::triangularApproximation(){
-    std::vector<Vertex*> tour;
+    std::queue<Vertex*> path;
     double dist = 0;
 
     std::chrono::steady_clock::time_point startTime = std::chrono::steady_clock::now();
 
-    supervisor->getGraph().triangularApproximation(tour, dist);
+    supervisor->getGraph().triangularApproximation(path, dist);
 
     std::chrono::steady_clock::time_point endTime = std::chrono::steady_clock::now();
 
@@ -198,11 +198,14 @@ void Menu::triangularApproximation(){
 
     double time = duration.count();
 
-    std::cout << "\n ";
-    for (Vertex* v : tour)
-        std::cout << v->getId() << " --> ";
+    std::cout << "\n Path: ";
+    if (path.size() <= 50)
+        while (!path.empty()) {
+           std::cout << path.front()->getId() << " ";
+           path.pop();
+        }
 
-    std::cout << "0\n Distance: " << dist << '\n';
+    std::cout << "\n Distance: " << dist << '\n';
     std::cout << " Execution Time: " << time << " milliseconds\n\n";
 }
 
@@ -220,9 +223,9 @@ void Menu::nearestNeighbor() {
 
     double time = duration.count();
 
-    std::cout << "\n ";
+    std::cout << "\n Path: ";
     for (Vertex* v : tour)
-        std::cout << v->getId() << " --> ";
+        std::cout << v->getId() << " ";
 
     std::cout << "0\n Distance: " << dist << '\n';
     std::cout << " Execution Time: " << time << " milliseconds\n\n";
