@@ -21,16 +21,18 @@ std::vector<Vertex *> Graph::getVertexSet() const {
     return this->vertexSet;
 }
 
-std::stack<int> Graph::savePath(Vertex* v){
-    std::stack<int> path;
+std::stack<Vertex*> Graph::savePath(Vertex* v){
+    std::stack<Vertex*> path;
+    path.push(vertexSet[0]);
     while (v->getPath() != nullptr) {
-        path.push(v->getId());
+        path.push(v);
         v = v->getPath()->getOrig();
     }
+    path.push(vertexSet[0]);
     return path;
 }
 
-void Graph::tspBT(std::stack<int> &bestPath, double &minDist) {
+void Graph::tspBT(std::stack<Vertex*> &bestPath, double &minDist) {
     for(Vertex* v: vertexSet)
         v->setVisited(false);
 
@@ -45,7 +47,7 @@ void Graph::tspBT(std::stack<int> &bestPath, double &minDist) {
     tspBTRec(0, 0, minDist, bestPath);
 }
 
-void Graph::tspBTRec(int curVertex, int curIndex, double &minDist, std::stack<int> &bestPath) {
+void Graph::tspBTRec(int curVertex, int curIndex, double &minDist, std::stack<Vertex*> &bestPath) {
     Vertex* v1 = findVertex(curVertex);
 
     if (curIndex == vertexSet.size() - 1){
@@ -83,8 +85,8 @@ void Graph::updateMst(Vertex* v){
    v->addMstEdge(w, v->getPath()->getDistance());
 }
 
-std::vector<Vertex *> Graph::prim() {
-    if (vertexSet.empty()) return this->vertexSet;
+void Graph::prim() {
+    if (vertexSet.empty()) return;
     for (auto v: vertexSet){
         v->setVisited(false);
         v->setPath(nullptr);
@@ -94,6 +96,7 @@ std::vector<Vertex *> Graph::prim() {
 
     vertexSet[0]->setPathCost(0);
     q.insert(vertexSet[0]);
+
     while(!q.empty()){
         auto u = q.extractMin();
         u->setVisited(true);
@@ -111,16 +114,25 @@ std::vector<Vertex *> Graph::prim() {
             }
         }
     }
-    return this->vertexSet;
 }
 
-void Graph::triangularApproximation(std::vector<Vertex*> &tour, double &dist) {
+void Graph::triangularApproximation(std::queue<Vertex*> &tour, double &dist) {
     prim();
     tour = preOrderTraversal();
-    for (int i = 0; i < tour.size(); i++){
-        Vertex* cur = tour[i];
-        Vertex* next = tour[(i+1)%tour.size()];
-        dist += distance(cur, next);
+    tour.push(vertexSet[0]);
+
+    std::queue<Vertex*> aux = tour;
+    Vertex* cur = aux.front();
+    aux.pop();
+    Vertex* next = aux.front();
+    while (!aux.empty()){
+       if (next->getPath() != nullptr && next->getPath()->getOrig() == cur)
+           dist += next->getPath()->getDistance();
+       else
+           dist += distance(cur, next);
+       cur = next;
+       aux.pop();
+       next = aux.front();
     }
 }
 
@@ -138,23 +150,23 @@ double Graph::haversine(double lat1, double lon1, double lat2, double lon2) {
     double a = pow(sin(dLat / 2), 2) + pow(sin(dLon / 2), 2) * cos(lat1) * cos(lat2);
     double rad = 6371;
     double c = 2 * asin(sqrt(a));
-    return rad * c;
+    return rad * c * 1000;
 
 }
 
-void Graph::preOrder(Vertex* vertex, std::vector<Vertex *> &l) {
-    l.push_back(vertex);
+void Graph::preOrder(Vertex* vertex, std::queue<Vertex *> &l) {
+    l.push(vertex);
     vertex->setVisited(true);
     for (Edge* edge : vertex->getMstAdj()) {
         Vertex* w = edge->getDest();
         if (!w->isVisited())
-            preOrder(edge->getDest(),l);
+            preOrder(w,l);
     }
 }
 
 
-std::vector<Vertex *> Graph::preOrderTraversal() {
-    std::vector<Vertex *> l;
+std::queue<Vertex *> Graph::preOrderTraversal() {
+    std::queue<Vertex *> l;
 
     for (auto v : vertexSet)
         v->setVisited(false);
