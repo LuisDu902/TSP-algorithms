@@ -9,10 +9,12 @@ void Vertex::addEdge(Vertex *d, double distance) {
     adj.push_back(newEdge);
 }
 
-void Vertex::updateMst() {
-    Vertex* v = path->getOrig();
-    v->mstAdj.push_back(path);
+void Vertex::addMstEdge(Vertex *d, double distance) {
+    Edge* newEdge = new Edge(this, d, distance);
+    mstAdj.push_back(newEdge);
+    degree++;
 }
+
 
 bool Vertex::operator<(Vertex & vertex) const {
     return this->pathCost < vertex.pathCost;

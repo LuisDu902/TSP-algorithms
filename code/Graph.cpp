@@ -77,6 +77,12 @@ void Graph::tspBTRec(int curVertex, int curIndex, double &minDist, std::stack<in
     }
 }
 
+void Graph::updateMst(Vertex* v){
+   Vertex* w = v->getPath()->getOrig();
+   w->addMstEdge(v, v->getPath()->getDistance());
+   v->addMstEdge(w, v->getPath()->getDistance());
+}
+
 std::vector<Vertex *> Graph::prim() {
     if (vertexSet.empty()) return this->vertexSet;
     for (auto v: vertexSet){
@@ -91,10 +97,8 @@ std::vector<Vertex *> Graph::prim() {
     while(!q.empty()){
         auto u = q.extractMin();
         u->setVisited(true);
-        if (u->getPath() != nullptr){
-            u->updateMst();
-        }
-           for (auto e : u->getAdj()){
+        if (u->getPath() != nullptr) updateMst(u);
+        for (auto e : u->getAdj()){
             auto w = e->getDest();
             if (!w->isVisited()){
                 auto oldDist = e->getDest()->getPathCost();

@@ -108,6 +108,7 @@ public:
 private:
     std::vector<Vertex *> vertexSet;
 
+    void updateMst(Vertex *v);
 };
 
 #endif //DA_GRAPH_H

@@ -19,7 +19,8 @@ public:
     bool operator<(Vertex & vertex) const;
 
     void addEdge(Vertex *d, double distance);
-    void updateMst();
+    void addMstEdge(Vertex *d, double distance);
+
     int getId() const;
     std::vector<Edge *> getAdj() const;
     std::vector<Edge *> getMstAdj() const;
@@ -45,6 +46,7 @@ protected:
     double longitude;
     double latitude;
     double pathCost = 0;
+    int degree = 0;
     Edge *path = nullptr;
     int queueIndex = 0;
 
