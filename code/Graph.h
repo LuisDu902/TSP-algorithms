@@ -4,6 +4,7 @@
 #include "VertexEdge.h"
 #include <stack>
 #include <cmath>
+#include <climits>
 
 class Graph {
 public:
@@ -96,7 +97,9 @@ public:
      */
     void tspBTRec(int curVertex, int curIndex, double &minDist, std::stack<int> &bestPath);
     std::vector<Vertex *> prim();
-    double distance(double lat1, double lon1, double lat2, double lon2);
+
+    void nearestNeighborTSP(std::vector<Vertex *> &tour, double &distance);
+
 private:
     std::vector<Vertex *> vertexSet;
 };

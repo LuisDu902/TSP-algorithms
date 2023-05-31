@@ -108,22 +108,32 @@ std::vector<Vertex *> Graph::prim() {
 }
 
 
+void Graph::nearestNeighborTSP(std::vector<Vertex *> &tour, double &distance) {
+    for (auto v : vertexSet) v->setVisited(false);
+    Vertex* startingVertex = vertexSet[0];
+    startingVertex->setVisited(true);
 
-
-
-double Graph::distance(double lat1, double lon1, double lat2, double lon2) {
-    double dLat = (lat2 - lat1) * M_PI / 180.0;
-    double dLon = (lon2 - lon1) * M_PI / 180.0;
-
-    // convert to radians
-    lat1 = (lat1) * M_PI / 180.0;
-    lat2 = (lat2) * M_PI / 180.0;
-
-    // apply formulae
-    double a = pow(sin(dLat / 2), 2) + pow(sin(dLon / 2), 2) * cos(lat1) * cos(lat2);
-    double rad = 6371;
-    double c = 2 * asin(sqrt(a));
-    return rad * c;
-
+    Vertex* currentVertex = startingVertex;
+    while(true){
+        tour.push_back(currentVertex);
+        double minDist = INT_MAX;
+        Vertex* nextVertex = nullptr;
+        for (auto e : currentVertex->getAdj()){
+            Vertex* neighbor = e->getDest();
+            if (!neighbor->isVisited()){
+                double dist = e->getDistance();
+                if (dist < minDist){
+                    minDist = dist;
+                    nextVertex = neighbor;
+                }
+            }
+        }
+        if (nextVertex == nullptr) break;
+        nextVertex->setVisited(true);
+        distance += minDist;
+        currentVertex = nextVertex;
+    }
+    if (currentVertex->getPath() == nullptr) printf("error");
+    distance += currentVertex->getPath()->getDistance();
 }
 

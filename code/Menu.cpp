@@ -146,7 +146,7 @@ void Menu::operations() {
                 bruteForce();
                 break;
             case 3:
-                bruteForce();
+                nearestNeighbor();
                 break;
             case 0:
                 std::cout << "\n";
@@ -177,6 +177,28 @@ void Menu::bruteForce() {
         std::cout << path.top() << " --> ";
         path.pop();
     }
+    std::cout << "0\n Distance: " << dist << '\n';
+    std::cout << " Execution Time: " << time << " milliseconds\n\n";
+}
+
+void Menu::nearestNeighbor() {
+    std::vector<Vertex *> tour;
+    double dist;
+
+    std::chrono::steady_clock::time_point startTime = std::chrono::steady_clock::now();
+
+    supervisor->getGraph().nearestNeighborTSP(tour, dist);
+
+    std::chrono::steady_clock::time_point endTime = std::chrono::steady_clock::now();
+
+    std::chrono::duration<double, std::milli> duration = std::chrono::duration_cast<std::chrono::duration<double, std::milli>>(endTime - startTime);
+
+    double time = duration.count();
+
+    std::cout << "\n ";
+    for (Vertex* v : tour)
+        std::cout << v->getId() << " --> ";
+
     std::cout << "0\n Distance: " << dist << '\n';
     std::cout << " Execution Time: " << time << " milliseconds\n\n";
 }
