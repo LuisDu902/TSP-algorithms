@@ -96,12 +96,25 @@ public:
      * O(V!), where V is the number of vertexes in the graph.
      */
     void tspBTRec(int curVertex, int curIndex, double &minDist, std::stack<int> &bestPath);
+
+    void triangularApproximation(std::vector<Vertex*> &tour, double &dist);
+
     std::vector<Vertex *> prim();
 
-    void nearestNeighborTSP(std::vector<Vertex *> &tour, double &distance);
+    double haversine(double lat1, double lon1, double lat2, double lon2);
+
+    std::vector<Vertex *> preOrderTraversal();
+  
+    void preOrder(Vertex *vertex, std::vector<Vertex *> &l);
+  
+    double distance(Vertex *v1, Vertex *v2);
+  
+  void nearestNeighborTSP(std::vector<Vertex *> &tour, double &distance);
 
 private:
     std::vector<Vertex *> vertexSet;
+
+    void updateMst(Vertex *v);
 };
 
 #endif //DA_GRAPH_H
