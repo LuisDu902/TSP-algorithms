@@ -133,7 +133,9 @@ void Graph::nearestNeighborTSP(std::vector<Vertex *> &tour, double &distance) {
         distance += minDist;
         currentVertex = nextVertex;
     }
-    if (currentVertex->getPath() == nullptr) printf("error");
-    distance += currentVertex->getPath()->getDistance();
+    if (currentVertex->getPath() == nullptr) {
+        printf("Not a Hamiltonian path, sorry.");
+    }
+    else distance += currentVertex->getPath()->getDistance();
 }
 
