@@ -253,9 +253,11 @@ void Menu::nearestNeighbor() {
 
     double time = duration.count();
 
-    std::cout << "\n Path: ";
-    for (Vertex* v : tour)
-        std::cout << v->getId() << " ";
+    if (tour.size() < 50) {
+        std::cout << "\n Path: ";
+        for (Vertex *v: tour)
+            std::cout << v->getId() << " ";
+    }
 
     std::cout << "0\n Distance: " << dist << '\n';
     std::cout << " Execution Time: " << time << " milliseconds\n\n";
