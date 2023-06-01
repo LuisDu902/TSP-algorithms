@@ -95,7 +95,6 @@ void Graph::prim() {
         v->setPath(nullptr);
         v->setPathCost(INF);
         v->setMstAdj({});
-        v->setMstIncoming({});
         v->setDegree(0);
     }
     MutablePriorityQueue<Vertex> q;
@@ -219,7 +218,7 @@ void Graph::nearestNeighborTSP(std::vector<Vertex *> &tour, double &distance) {
 
 }
 
-void Graph::christofides(std::queue<Vertex *> &tour, double &dist) {
+void Graph::christofides(std::vector<Vertex *> &tour, double &dist) {
 
     /* (1) Prim algorithm to get a MST - T */
     prim();
@@ -235,30 +234,88 @@ void Graph::christofides(std::queue<Vertex *> &tour, double &dist) {
 
     /* (5) Transform the Circuit into a Hamiltonian Cycle */
     tour = hamiltonianCycle(circuit);
-    tour.push(vertexSet[0]);
+    tour.push_back(vertexSet[0]);
 
-    std::queue<Vertex*> aux = tour;
-    Vertex* cur = aux.front();
-    aux.pop();
-    Vertex* next = aux.front();
-    while (!aux.empty()){
-        dist += distance(cur, next);
-        cur = next;
-        aux.pop();
-        next = aux.front();
+    for (int i = 0; i<tour.size()-1; i++)
+        dist += distance(tour[i], tour[i+1]);
+
+    /* (6) Further improve the result with a 2-opt algorithm */
+    twoOpt(tour, dist);
+}
+
+void Graph::twoOpt(std::vector<Vertex*>& tour, double& dist) {
+    bool improved = true;
+
+    while (improved) {
+        improved = false;
+
+        double bestDistance = dist;
+        std::vector<Vertex*> bestTour = tour;
+
+        // Iterate through each edge in the tour
+        for (int i = 0; i < tour.size() - 2; ++i) {
+            Vertex* vertexA = tour[i];
+            Vertex* vertexB = tour[i + 1];
+
+            // Iterate through all non-adjacent edges
+            for (int j = i + 2; j < tour.size() - 1; ++j) {
+                Vertex* vertexC = tour[j];
+                Vertex* vertexD = tour[j + 1];
+                double d1, d2, d3, d4;
+                if (vertexA->getId() < vertexB->getId()){
+                    d1 = vertexB->getAdj()[vertexA->getId()]->getDistance();
+                } else{
+                    d1 = vertexA->getAdj()[vertexB->getId()]->getDistance();
+                }
+                if (vertexC->getId() < vertexD->getId()){
+                    d2 = vertexD->getAdj()[vertexC->getId()]->getDistance();
+                } else{
+                    d2 = vertexC->getAdj()[vertexD->getId()]->getDistance();
+                }
+                if (vertexA->getId() < vertexC->getId()){
+                    d3 = vertexC->getAdj()[vertexA->getId()]->getDistance();
+                } else{
+                    d3 = vertexA->getAdj()[vertexC->getId()]->getDistance();
+                }
+                if (vertexB->getId() < vertexD->getId()){
+                    d4 = vertexD->getAdj()[vertexB->getId()]->getDistance();
+                } else{
+                    d4 = vertexB->getAdj()[vertexD->getId()]->getDistance();
+                }
+
+
+
+                // Check if swapping edges (vertexA, vertexB) and (vertexC, vertexD) improves the tour
+                double newDistance = dist - (d1 + d2) + (d3 + d4);
+                if (newDistance < bestDistance) {
+                    bestDistance = newDistance;
+                    bestTour = tour;
+
+                    // Reverse the portion of the tour between vertexB and vertexC
+                    std::reverse(bestTour.begin() + i + 1, bestTour.begin() + j + 1);
+
+                    improved = true;
+                }
+            }
+        }
+
+        // Update the tour and distance with the best result of this iteration
+        tour = bestTour;
+        dist = bestDistance;
     }
 }
 
-std::queue<Vertex*> Graph::hamiltonianCycle(std::stack<Vertex*> circuit){
+
+std::vector<Vertex*> Graph::hamiltonianCycle(std::stack<Vertex*> circuit){
     for (auto v: vertexSet)
         v->setVisited(false);
-    std::queue<Vertex*> tour;
+    std::vector<Vertex*> tour;
     Vertex* cur;
     while (!circuit.empty()){
         cur = circuit.top();
         if (!cur->isVisited()){
             cur->setVisited(true);
-            tour.push(cur);
+            tour.push_back(cur);
         }
         circuit.pop();
     }

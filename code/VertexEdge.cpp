@@ -7,14 +7,12 @@ Vertex::Vertex(int id, double longitude, double latitude): id(id), longitude(lon
 Edge* Vertex::addEdge(Vertex *d, double distance) {
     Edge* newEdge = new Edge(this, d, distance);
     adj.push_back(newEdge);
-    d->incoming.push_back(newEdge);
     return newEdge;
 }
 
 Edge* Vertex::addMstEdge(Vertex *d, double distance) {
     Edge* newEdge = new Edge(this, d, distance);
     mstAdj.push_back(newEdge);
-    d->mstIncoming.push_back(newEdge);
     degree++;
     return newEdge;
 }
@@ -37,10 +35,6 @@ std::vector<Edge *> Vertex::getAdj() const{
 std::vector<Edge *> Vertex::getMstAdj() const{
     return this->mstAdj;
 }
-void Vertex::setMstIncoming(std::vector<Edge*> mstIncoming){
-    this->mstIncoming = mstIncoming;
-}
-
 
 double Vertex::getPathCost() const {
     return this->pathCost;

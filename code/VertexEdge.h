@@ -36,18 +36,14 @@ public:
     void setPathCost(double pathCost);
     void setPath(Edge *path);
     void setMstAdj(std::vector<Edge*> mstAdj);
-    void setMstIncoming(std::vector<Edge*> mstIncoming);
 
     friend class MutablePriorityQueue<Vertex>;
-
 
 
 protected:
     int id;
     std::vector<Edge *> adj;
-    std::vector<Edge *> incoming;
     std::vector<Edge *> mstAdj;
-    std::vector<Edge *> mstIncoming;
     bool visited = false;
     double longitude;
     double latitude;

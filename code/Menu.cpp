@@ -235,7 +235,7 @@ void Menu::nearestNeighbor() {
 }
 
 void Menu::christofides(){
-    std::queue<Vertex *> path;
+    std::vector<Vertex *> path;
     double dist = 0;
 
     std::chrono::steady_clock::time_point startTime = std::chrono::steady_clock::now();
@@ -250,10 +250,8 @@ void Menu::christofides(){
 
     if (path.size() <= 50) {
         std::cout << "\n Path: ";
-        while (!path.empty()) {
-            std::cout << path.front()->getId() << " ";
-            path.pop();
-        }
+        for (auto p : path)
+            std::cout << p->getId() << " ";
     }
 
     std::cout << "\n Distance: " << dist << '\n';
