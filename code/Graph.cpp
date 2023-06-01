@@ -188,10 +188,8 @@ double Graph::distance(Vertex* v1, Vertex* v2){
 
 void Graph::nearestNeighborTSP(std::vector<Vertex *> &tour, double &distance) {
     for (auto v : vertexSet) v->setVisited(false);
-    Vertex* startingVertex = vertexSet[0];
-    startingVertex->setVisited(true);
-
-    Vertex* currentVertex = startingVertex;
+    Vertex* currentVertex = vertexSet[0];
+    currentVertex->setVisited(true);
     while(true){
         tour.push_back(currentVertex);
         double minDist = INT_MAX;
@@ -211,11 +209,8 @@ void Graph::nearestNeighborTSP(std::vector<Vertex *> &tour, double &distance) {
         distance += minDist;
         currentVertex = nextVertex;
     }
-    if (currentVertex->getPath() == nullptr) {
-        printf("Not a Hamiltonian path, sorry.");
-    }
-    else distance += currentVertex->getPath()->getDistance();
 
+    distance += currentVertex->getAdj()[0]->getDistance();
 }
 
 void Graph::christofides(std::vector<Vertex *> &tour, double &dist) {
@@ -244,16 +239,15 @@ void Graph::christofides(std::vector<Vertex *> &tour, double &dist) {
 }
 
 void Graph::twoOpt(std::vector<Vertex*>& tour, double& dist) {
-    bool improved = true;
+    int k = 0;
 
-    while (improved) {
-        improved = false;
+    while (k < tour.size()) {
 
         double bestDistance = dist;
         std::vector<Vertex*> bestTour = tour;
 
         // Iterate through each edge in the tour
-        for (int i = 0; i < tour.size() - 2; ++i) {
+        for (int i = k; i < tour.size() - 2; ++i) {
             Vertex* vertexA = tour[i];
             Vertex* vertexB = tour[i + 1];
 
@@ -294,7 +288,6 @@ void Graph::twoOpt(std::vector<Vertex*>& tour, double& dist) {
                     // Reverse the portion of the tour between vertexB and vertexC
                     std::reverse(bestTour.begin() + i + 1, bestTour.begin() + j + 1);
 
-                    improved = true;
                 }
             }
         }
@@ -302,6 +295,7 @@ void Graph::twoOpt(std::vector<Vertex*>& tour, double& dist) {
         // Update the tour and distance with the best result of this iteration
         tour = bestTour;
         dist = bestDistance;
+        k += 75;
     }
 }
 
