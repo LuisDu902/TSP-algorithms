@@ -208,7 +208,7 @@ void Menu::triangularApproximation(){
 
 void Menu::nearestNeighbor() {
     std::vector<Vertex *> tour;
-    double dist;
+    double dist = 0.0;
 
     std::chrono::steady_clock::time_point startTime = std::chrono::steady_clock::now();
 
