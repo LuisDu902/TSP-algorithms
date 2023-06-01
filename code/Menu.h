@@ -69,5 +69,7 @@ private:
     Supervisor* supervisor;
 
     void triangularApproximation();
+
+    void christofides();
 };
 #endif //DA_MENU_H

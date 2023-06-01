@@ -15,13 +15,15 @@ void Vertex::addMstEdge(Vertex *d, double distance) {
     degree++;
 }
 
-
 bool Vertex::operator<(Vertex & vertex) const {
     return this->pathCost < vertex.pathCost;
 }
 
 int Vertex::getId() const{
     return this->id;
+}
+int Vertex::getDegree() const{
+    return this->degree;
 }
 
 std::vector<Edge *> Vertex::getAdj() const{
@@ -78,3 +80,4 @@ Vertex * Edge::getOrig() const{
 double Edge::getDistance() const{
     return this->distance;
 }
+

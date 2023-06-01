@@ -21,9 +21,8 @@ public:
      * Initializes the graph according to the chosen path.
      *
      * @param path The file path where the graph data is located.
-     * @param isRealGraph  A boolean flag indicating whether the graph is a real graph or not.
      */
-    Supervisor(std::string path, bool isRealGraph);
+    Supervisor(std::string path);
 
 private:
 

@@ -35,6 +35,7 @@ void Menu::init() {
 }
 
 void Menu::toyGraphs() {
+    std::cin.clear();
     int option;
     std::string filePath = "../data/Toy-Graphs/";
     while(true){
@@ -64,7 +65,7 @@ void Menu::toyGraphs() {
         }
         break;
     }
-    supervisor = new Supervisor(filePath, false);
+    supervisor = new Supervisor(filePath);
     operations();
 }
 
@@ -90,7 +91,7 @@ void Menu::extraGraphs() {
             std::cout << "\n Invalid input, try again. \n";
         }
     }
-    supervisor = new Supervisor(filePath, false);
+    supervisor = new Supervisor(filePath);
     operations();
 }
 
@@ -124,7 +125,7 @@ void Menu::realWorldGraphs() {
         }
         break;
     }
-    supervisor = new Supervisor(filePath, true);
+    supervisor = new Supervisor(filePath);
     operations();
 }
 
@@ -143,12 +144,11 @@ void Menu::operations() {
                 bruteForce();
                 break;
             case 2:
-            {
                 triangularApproximation();
                 break;
-            }
             case 3:
-                nearestNeighbor();
+                //nearestNeighbor();
+                christofides();
                 break;
             case 0:
                 std::cout << "\n";
@@ -198,12 +198,14 @@ void Menu::triangularApproximation(){
 
     double time = duration.count();
 
-    std::cout << "\n Path: ";
-    if (path.size() <= 50)
+
+    if (path.size() <= 50) {
+        std::cout << "\n Path: ";
         while (!path.empty()) {
-           std::cout << path.front()->getId() << " ";
-           path.pop();
+            std::cout << path.front()->getId() << " ";
+            path.pop();
         }
+    }
 
     std::cout << "\n Distance: " << dist << '\n';
     std::cout << " Execution Time: " << time << " milliseconds\n\n";
@@ -230,6 +232,10 @@ void Menu::nearestNeighbor() {
     std::cout << "0\n Distance: " << dist << '\n';
     std::cout << " Execution Time: " << time << " milliseconds\n\n";
   
+}
+
+void Menu::christofides(){
+    supervisor->getGraph().christofides();
 }
 
 void Menu::end() {

@@ -26,6 +26,7 @@ public:
     std::vector<Edge *> getMstAdj() const;
     double getPathCost() const;
     Edge* getPath() const;
+    int getDegree() const;
     bool isVisited() const;
 
     void setVisited(bool visited);
