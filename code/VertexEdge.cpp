@@ -4,15 +4,19 @@
 
 Vertex::Vertex(int id, double longitude, double latitude): id(id), longitude(longitude), latitude(latitude) {}
 
-void Vertex::addEdge(Vertex *d, double distance) {
+Edge* Vertex::addEdge(Vertex *d, double distance) {
     Edge* newEdge = new Edge(this, d, distance);
     adj.push_back(newEdge);
+    d->incoming.push_back(newEdge);
+    return newEdge;
 }
 
-void Vertex::addMstEdge(Vertex *d, double distance) {
+Edge* Vertex::addMstEdge(Vertex *d, double distance) {
     Edge* newEdge = new Edge(this, d, distance);
     mstAdj.push_back(newEdge);
+    d->mstIncoming.push_back(newEdge);
     degree++;
+    return newEdge;
 }
 
 bool Vertex::operator<(Vertex & vertex) const {
@@ -33,6 +37,10 @@ std::vector<Edge *> Vertex::getAdj() const{
 std::vector<Edge *> Vertex::getMstAdj() const{
     return this->mstAdj;
 }
+void Vertex::setMstIncoming(std::vector<Edge*> mstIncoming){
+    this->mstIncoming = mstIncoming;
+}
+
 
 double Vertex::getPathCost() const {
     return this->pathCost;
@@ -50,6 +58,14 @@ void Vertex::setVisited(bool visited){
     this->visited = visited;
 }
 
+void Vertex::setMstAdj(std::vector<Edge*> mstAdj){
+    this->mstAdj = mstAdj;
+}
+
+void Vertex::setDegree(int degree){
+    this->degree = degree;
+}
+
 void Vertex::setPathCost(double pathCost) {
     this->pathCost = pathCost;
 }
@@ -58,11 +74,11 @@ void Vertex::setPath(Edge *path) {
     this->path = path;
 }
 
-double Vertex::getLatitude() {
+double Vertex::getLatitude() const{
     return this->latitude;
 }
 
-double Vertex::getLongitude() {
+double Vertex::getLongitude() const{
     return this->longitude;
 }
 
@@ -81,3 +97,22 @@ double Edge::getDistance() const{
     return this->distance;
 }
 
+bool Edge::cmp::operator()(const Edge* e1, const Edge* e2) const {
+    return e1->distance < e2->distance;
+}
+
+bool Edge::isSelected() const {
+    return this->selected;
+}
+
+void Edge::setSelected(bool selected) {
+    this->selected = selected;
+}
+
+Edge *Edge::getReverse() const {
+    return this->reverse;
+}
+
+void Edge::setReverse(Edge *reverse) {
+    this->reverse = reverse;
+}

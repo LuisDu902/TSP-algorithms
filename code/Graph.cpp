@@ -13,8 +13,10 @@ void Graph::addVertex(const int &id, const double &longitude, const double &lati
 }
 
 void Graph::addEdge(Vertex* &v1, Vertex* &v2, double distance) const{
-    v1->addEdge(v2, distance);
-    v2->addEdge(v1, distance);
+    auto e1 = v1->addEdge(v2, distance);
+    auto e2 = v2->addEdge(v1, distance);
+    e1->setReverse(e2);
+    e2->setReverse(e1);
 }
 
 std::vector<Vertex *> Graph::getVertexSet() const {
@@ -80,8 +82,10 @@ void Graph::tspBTRec(int curVertex, int curIndex, double &minDist, std::stack<Ve
 
 void Graph::updateMst(Vertex* v){
    Vertex* w = v->getPath()->getOrig();
-   w->addMstEdge(v, v->getPath()->getDistance());
-   v->addMstEdge(w, v->getPath()->getDistance());
+   auto e1 = w->addMstEdge(v, v->getPath()->getDistance());
+   auto e2 = v->addMstEdge(w, v->getPath()->getDistance());
+   e1->setReverse(e2);
+   e2->setReverse(e1);
 }
 
 void Graph::prim() {
@@ -90,6 +94,9 @@ void Graph::prim() {
         v->setVisited(false);
         v->setPath(nullptr);
         v->setPathCost(INF);
+        v->setMstAdj({});
+        v->setMstIncoming({});
+        v->setDegree(0);
     }
     MutablePriorityQueue<Vertex> q;
 
@@ -213,10 +220,45 @@ void Graph::nearestNeighborTSP(std::vector<Vertex *> &tour, double &distance) {
 }
 
 void Graph::christofides() {
+
+    /* (1) Prim algorithm to get a MST - T */
     prim();
+
+    /* (2) Get all the vertexes with odd degree in T */
     std::unordered_set<Vertex*> oddVertexes = oddDegreeVertexes();
+
+    /* (3) Add a minimum-weight perfect-matching of the odd vertices in T */
     perfectMatching(oddVertexes);
 
+    /* (4) Find a Eulerian Circuit */
+    std::vector<Vertex*> circuit = eurelianCircuit();
+
+    /* (5) Transform the Circuit into a Hamiltonian Cycle */
+
+}
+/*0(E)*/
+std::vector<Vertex*> Graph::eurelianCircuit() {
+    for (auto v: vertexSet)
+        for (auto e : v->getMstAdj()) {
+            e->setSelected(false);
+            e->getReverse()->setSelected(false);
+        }
+    std::vector<Vertex*> circuit;
+    Vertex* startingNode = vertexSet[0];
+    dfs(startingNode, circuit);
+}
+
+void Graph::dfs(Vertex* v, std::vector<Vertex*> &circuit){
+    for (auto e: v->getMstAdj()) {
+        if (!e->isSelected()) {
+            e->setSelected(true);
+            e->getReverse()->setSelected(true);
+            std::cout << e->getOrig()->getId() << '\n';
+            dfs(e->getDest(), circuit);
+
+        }
+    }
+    circuit.push_back(v);
 }
 
 std::unordered_set<Vertex*> Graph::oddDegreeVertexes() {
@@ -227,72 +269,35 @@ std::unordered_set<Vertex*> Graph::oddDegreeVertexes() {
     return oddVertexes;
 }
 
-void Graph::matchVertex(Vertex* v, std::unordered_set<Vertex *> oddVertexes){
-    v->setVisited(true);
-    double min = INF;
-    bool isOdd = false;
-    Vertex* m;
-    for (Edge* e: v->getAdj()){
-        Vertex* w = e->getDest();
-        isOdd = oddVertexes.find(w) != oddVertexes.end();
-        if (!w->isVisited() && isOdd && e->getDistance() < min){
-            min = e->getDistance();
-            m = w;
+void Graph::matchVertexes(Edge* e){
+    e->getDest()->setVisited(true);
+    e->getOrig()->setVisited(true);
+    e->getDest()->addMstEdge(e->getOrig(), e->getDistance());
+    e->getOrig()->addMstEdge(e->getDest(), e->getDistance());
+}
+
+void Graph::perfectMatching(const std::unordered_set<Vertex*>& oddVertexes){
+    for (auto v: oddVertexes)
+        v->setVisited(false);
+
+    std::set<Edge*, Edge::cmp> edges;
+    int explored = 0;
+    bool isOdd, isNew;
+
+    for (Vertex* v: oddVertexes) {
+        for (Edge *e: v->getAdj()) {
+            isOdd = oddVertexes.find(e->getDest()) != oddVertexes.end();
+            if (e->getDest()->getId() > v->getId() && isOdd)
+                edges.insert(e);
         }
     }
-    m->setVisited(true);
-    v->addMstEdge(m, min);
-    v->addMstEdge(v, min);
-    std::cout << " Adding " << v->getId() << " - " << m->getId() << " " << min <<'\n';
-}
 
-void Graph::perfectMatching(const std::unordered_set<Vertex *>& oddVertexes) {
-    for (Vertex* v : oddVertexes)
-        v->setVisited(false);
-
-    for (Vertex* v : oddVertexes)
-        if (!v->isVisited())
-            matchVertex(v, oddVertexes);
-}
-/*
-void Graph::perfectMatching(std::vector<Vertex*> oddVertexes){
-    for (auto v: oddVertexes)
-        v->setVisited(false);
-
-    std::vector<Edge*> edges;
-    Edge* edge;
-    for (Vertex* v: oddVertexes){
-        if (v->isVisited()) continue;
-        edges.clear();
-        for (Edge* e: v->getAdj())
-            if (e->getDest()->getId() > v->getId() && e->getDest()->getDegree() % 2 != 0 && !e->getDest()->isVisited())
-                edges.push_back(e);
-        std::sort(edges.begin(), edges.end());
-        edge = edges.front();
-        std::cout << edge->getOrig()->getId() << " to " << edge->getDest()->getId() << " - " << edge->getDistance() << '\n';
-        v->addMstEdge(edge->getDest(), edge->getDistance());
-        edge->getDest()->addMstEdge(v, edge->getDistance());
-        v->setVisited(true);
-        edge->getDest()->setVisited(true);
-    }
-
-
-    return ;
-}*/
-/*
-void matchVertex(std::set<Vertex*> oddVertexes, Vertex* v){
-    v->setVisited(true);
-    for (Edge* e : v->getAdj()){
-        if (oddVertexes.find(e->getDest()))
+    for (auto edge : edges){
+        isNew = !edge->getDest()->isVisited() && !edge->getOrig()->isVisited();
+        if (isNew) {
+            matchVertexes(edge);
+            explored += 2;
+        }
+        if (explored == oddVertexes.size()) return;
     }
 }
-void Graph::perfectMatching(std::set<Vertex*> oddVertexes){
-    for (auto v: oddVertexes)
-        v->setVisited(false);
-
-    for (auto v: oddVertexes)
-        if (!v->isVisited())
-            matchVertex(oddVertexes, v);
-
-
-}*/
