@@ -62,6 +62,7 @@ public:
      * Prints the optimal path, its distance, and the execution time.
      */
     void bruteForce();
+    void heuristics();
 
     void nearestNeighbor();
 private:
