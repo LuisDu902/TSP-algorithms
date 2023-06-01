@@ -6,7 +6,8 @@
 #include <queue>
 #include <cmath>
 #include <climits>
-
+#include <set>
+#include <unordered_set>
 class Graph {
 public:
 
@@ -112,10 +113,25 @@ public:
   
     void nearestNeighborTSP(std::vector<Vertex *> &tour, double &distance);
 
+    void christofides(std::vector<Vertex *> &tour, double &distance);
+
 private:
     std::vector<Vertex *> vertexSet;
 
     void updateMst(Vertex *v);
+
+    std::unordered_set<Vertex*> oddDegreeVertexes();
+    void perfectMatching(const std::unordered_set<Vertex *>& oddVertexes);
+
+    void matchVertexes(Edge *e);
+
+    std::stack<Vertex *> eurelianCircuit();
+
+    void dfs(Vertex *v, std::stack<Vertex *> &circuit);
+
+    std::vector<Vertex *> hamiltonianCycle(std::stack<Vertex *> circuit);
+
+    void twoOpt(std::vector<Vertex *> &tour, double &dist);
 };
 
 #endif //DA_GRAPH_H

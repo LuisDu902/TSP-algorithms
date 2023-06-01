@@ -1,7 +1,7 @@
 #include "Supervisor.h"
 
-Supervisor::Supervisor(std::string path, bool isRealGraph) {
-    if (isRealGraph){
+Supervisor::Supervisor(std::string path) {
+    if (path.find("Real-world Graphs") != std::string::npos){
         createNodes(path);
         createEdges(path);
     }
@@ -38,7 +38,9 @@ void Supervisor::createGraph(std::string chosenGraph) {
     int orig, dest;
     double distance;
     myFile.open(chosenGraph);
-    getline(myFile, line);
+
+    if ((chosenGraph.find("Toy-Graphs") != std::string::npos))
+        getline(myFile, line);
 
     while (getline(myFile,line)){
         std::istringstream iss(line);

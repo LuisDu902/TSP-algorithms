@@ -18,25 +18,27 @@ public:
     Vertex(int id, double longitude, double latitude);
     bool operator<(Vertex & vertex) const;
 
-    void addEdge(Vertex *d, double distance);
-    void addMstEdge(Vertex *d, double distance);
+    Edge* addEdge(Vertex *d, double distance);
+    Edge* addMstEdge(Vertex *d, double distance);
 
     int getId() const;
     std::vector<Edge *> getAdj() const;
     std::vector<Edge *> getMstAdj() const;
     double getPathCost() const;
     Edge* getPath() const;
+    int getDegree() const;
     bool isVisited() const;
+    double getLatitude() const;
+    double getLongitude() const;
 
     void setVisited(bool visited);
+    void setDegree(int degree);
     void setPathCost(double pathCost);
     void setPath(Edge *path);
+    void setMstAdj(std::vector<Edge*> mstAdj);
 
     friend class MutablePriorityQueue<Vertex>;
 
-    double getLatitude();
-
-    double getLongitude();
 
 protected:
     int id;
@@ -61,11 +63,20 @@ public:
     Vertex * getDest() const;
     Vertex * getOrig() const;
     double getDistance() const;
+    Edge *getReverse() const;
+    bool isSelected() const;
+
+    void setSelected(bool selected);
+    void setReverse(Edge *reverse);
+
+    struct cmp{bool operator()(const Edge* e1, const Edge* e2) const;};
+
 protected:
     Vertex * dest;
     Vertex *orig;
+    Edge *reverse = nullptr;
     double distance;
-
+    bool selected = false;
 };
 
 #endif //DA_VERTEXEDGE_H
