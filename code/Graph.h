@@ -125,9 +125,9 @@ private:
 
     void matchVertexes(Edge *e);
 
-    std::vector<Vertex *> eurelianCircuit();
+    std::stack<Vertex *> eurelianCircuit();
 
-    void dfs(Vertex *v, std::vector<Vertex *> &circuit);
+    void dfs(Vertex *v, std::stack<Vertex *> &circuit);
 };
 
 #endif //DA_GRAPH_H

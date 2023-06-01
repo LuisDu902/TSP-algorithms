@@ -231,34 +231,33 @@ void Graph::christofides() {
     perfectMatching(oddVertexes);
 
     /* (4) Find a Eulerian Circuit */
-    std::vector<Vertex*> circuit = eurelianCircuit();
+    std::stack<Vertex*> circuit = eurelianCircuit();
 
     /* (5) Transform the Circuit into a Hamiltonian Cycle */
 
 }
 /*0(E)*/
-std::vector<Vertex*> Graph::eurelianCircuit() {
+std::stack<Vertex*> Graph::eurelianCircuit() {
     for (auto v: vertexSet)
         for (auto e : v->getMstAdj()) {
             e->setSelected(false);
             e->getReverse()->setSelected(false);
         }
-    std::vector<Vertex*> circuit;
+    std::stack<Vertex*> circuit;
     Vertex* startingNode = vertexSet[0];
     dfs(startingNode, circuit);
+    return circuit;
 }
 
-void Graph::dfs(Vertex* v, std::vector<Vertex*> &circuit){
+void Graph::dfs(Vertex* v, std::stack<Vertex*> &circuit){
     for (auto e: v->getMstAdj()) {
         if (!e->isSelected()) {
             e->setSelected(true);
             e->getReverse()->setSelected(true);
-            std::cout << e->getOrig()->getId() << '\n';
             dfs(e->getDest(), circuit);
-
         }
     }
-    circuit.push_back(v);
+    circuit.push(v);
 }
 
 std::unordered_set<Vertex*> Graph::oddDegreeVertexes() {
@@ -272,8 +271,11 @@ std::unordered_set<Vertex*> Graph::oddDegreeVertexes() {
 void Graph::matchVertexes(Edge* e){
     e->getDest()->setVisited(true);
     e->getOrig()->setVisited(true);
-    e->getDest()->addMstEdge(e->getOrig(), e->getDistance());
-    e->getOrig()->addMstEdge(e->getDest(), e->getDistance());
+    auto e1 = e->getDest()->addMstEdge(e->getOrig(), e->getDistance());
+    auto e2 = e->getOrig()->addMstEdge(e->getDest(), e->getDistance());
+    e1->setReverse(e2);
+    e2->setReverse(e1);
+    std::cout << e->getDest()->getId() << " " << e->getOrig()->getId() << " : " << e->getDistance() << '\n';
 }
 
 void Graph::perfectMatching(const std::unordered_set<Vertex*>& oddVertexes){
