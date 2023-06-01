@@ -134,8 +134,8 @@ void Menu::operations() {
     while(true) {
         std::cout << " Choose your operation?\n\n"
                      " [1] Brute force\n"
-                     " [2] Heuristics\n"
-                     " [3] to be done\n\n"
+                     " [2] Triangular Approximation\n"
+                     " [3] Other Heuristics\n\n"
                      " Option: ";
 
         std::cin >> option;
@@ -147,8 +147,7 @@ void Menu::operations() {
                 triangularApproximation();
                 break;
             case 3:
-                //nearestNeighbor();
-                christofides();
+                heuristics();
                 break;
             case 0:
                 std::cout << "\n";
@@ -211,6 +210,35 @@ void Menu::triangularApproximation(){
     std::cout << " Execution Time: " << time << " milliseconds\n\n";
 }
 
+void Menu::heuristics() {
+    int option;
+    while(true) {
+        std::cout << " Choose your preferred heuristic \n\n"
+                     " [1] Christofides\n"
+                     " [2] Nearest neighbour\n"
+                     " [3] Nearest insertion\n\n"
+                     " Option: ";
+
+        std::cin >> option;
+        switch (option) {
+            case 1:
+                christofides();
+                break;
+            case 2:
+                nearestNeighbor();
+                break;
+            case 3:
+                //
+                break;
+            case 0:
+                std::cout << "\n";
+                return;
+            default:
+                std::cout << "\n Invalid input, try again. \n\n";
+                continue;
+        }
+    }
+}
 void Menu::nearestNeighbor() {
     std::vector<Vertex *> tour;
     double dist = 0.0;
@@ -225,9 +253,11 @@ void Menu::nearestNeighbor() {
 
     double time = duration.count();
 
-    std::cout << "\n Path: ";
-    for (Vertex* v : tour)
-        std::cout << v->getId() << " ";
+    if (tour.size() < 50) {
+        std::cout << "\n Path: ";
+        for (Vertex *v: tour)
+            std::cout << v->getId() << " ";
+    }
 
     std::cout << "0\n Distance: " << dist << '\n';
     std::cout << " Execution Time: " << time << " milliseconds\n\n";
