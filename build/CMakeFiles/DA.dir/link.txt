@@ -1,1 +1,0 @@
-/usr/bin/c++ CMakeFiles/DA.dir/code/main.cpp.o CMakeFiles/DA.dir/code/Graph.cpp.o CMakeFiles/DA.dir/code/Supervisor.cpp.o CMakeFiles/DA.dir/code/Menu.cpp.o CMakeFiles/DA.dir/code/VertexEdge.cpp.o -o DA 
