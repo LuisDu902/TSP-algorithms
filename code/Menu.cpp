@@ -235,7 +235,30 @@ void Menu::nearestNeighbor() {
 }
 
 void Menu::christofides(){
-    supervisor->getGraph().christofides();
+    std::queue<Vertex *> path;
+    double dist = 0;
+
+    std::chrono::steady_clock::time_point startTime = std::chrono::steady_clock::now();
+
+    supervisor->getGraph().christofides(path, dist);
+
+    std::chrono::steady_clock::time_point endTime = std::chrono::steady_clock::now();
+
+    std::chrono::duration<double, std::milli> duration = std::chrono::duration_cast<std::chrono::duration<double, std::milli>>(endTime - startTime);
+
+    double time = duration.count();
+
+    if (path.size() <= 50) {
+        std::cout << "\n Path: ";
+        while (!path.empty()) {
+            std::cout << path.front()->getId() << " ";
+            path.pop();
+        }
+    }
+
+    std::cout << "\n Distance: " << dist << '\n';
+    std::cout << " Execution Time: " << time << " milliseconds\n\n";
+
 }
 
 void Menu::end() {

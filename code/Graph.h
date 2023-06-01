@@ -113,7 +113,7 @@ public:
   
     void nearestNeighborTSP(std::vector<Vertex *> &tour, double &distance);
 
-    void christofides();
+    void christofides(std::queue<Vertex *> &tour, double &distance);
 
 private:
     std::vector<Vertex *> vertexSet;
@@ -128,6 +128,8 @@ private:
     std::stack<Vertex *> eurelianCircuit();
 
     void dfs(Vertex *v, std::stack<Vertex *> &circuit);
+
+    std::queue<Vertex *> hamiltonianCycle(std::stack<Vertex *> circuit);
 };
 
 #endif //DA_GRAPH_H

@@ -219,7 +219,7 @@ void Graph::nearestNeighborTSP(std::vector<Vertex *> &tour, double &distance) {
 
 }
 
-void Graph::christofides() {
+void Graph::christofides(std::queue<Vertex *> &tour, double &dist) {
 
     /* (1) Prim algorithm to get a MST - T */
     prim();
@@ -234,8 +234,37 @@ void Graph::christofides() {
     std::stack<Vertex*> circuit = eurelianCircuit();
 
     /* (5) Transform the Circuit into a Hamiltonian Cycle */
+    tour = hamiltonianCycle(circuit);
+    tour.push(vertexSet[0]);
 
+    std::queue<Vertex*> aux = tour;
+    Vertex* cur = aux.front();
+    aux.pop();
+    Vertex* next = aux.front();
+    while (!aux.empty()){
+        dist += distance(cur, next);
+        cur = next;
+        aux.pop();
+        next = aux.front();
+    }
 }
+
+std::queue<Vertex*> Graph::hamiltonianCycle(std::stack<Vertex*> circuit){
+    for (auto v: vertexSet)
+        v->setVisited(false);
+    std::queue<Vertex*> tour;
+    Vertex* cur;
+    while (!circuit.empty()){
+        cur = circuit.top();
+        if (!cur->isVisited()){
+            cur->setVisited(true);
+            tour.push(cur);
+        }
+        circuit.pop();
+    }
+    return tour;
+}
+
 /*0(E)*/
 std::stack<Vertex*> Graph::eurelianCircuit() {
     for (auto v: vertexSet)
@@ -260,6 +289,8 @@ void Graph::dfs(Vertex* v, std::stack<Vertex*> &circuit){
     circuit.push(v);
 }
 
+
+
 std::unordered_set<Vertex*> Graph::oddDegreeVertexes() {
     std::unordered_set<Vertex*> oddVertexes;
     for (Vertex* v: vertexSet)
@@ -275,7 +306,7 @@ void Graph::matchVertexes(Edge* e){
     auto e2 = e->getOrig()->addMstEdge(e->getDest(), e->getDistance());
     e1->setReverse(e2);
     e2->setReverse(e1);
-    std::cout << e->getDest()->getId() << " " << e->getOrig()->getId() << " : " << e->getDistance() << '\n';
+    //std::cout << e->getDest()->getId() << " " << e->getOrig()->getId() << " : " << e->getDistance() << '\n';
 }
 
 void Graph::perfectMatching(const std::unordered_set<Vertex*>& oddVertexes){
