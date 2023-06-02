@@ -84,5 +84,7 @@ private:
      * Prints the path, its distance, the execution time and the improvements compared to the triangular approximation. .
      */
     void christofides();
+
+    void nearestInsertion();
 };
 #endif //DA_MENU_H

@@ -162,7 +162,7 @@ void Menu::operations(bool smallGraph, bool completeGraph) {
                 else std::cout << " This graph is not fully connected\n";
                 break;
             case 5:
-                if (completeGraph) christofides();
+                if (completeGraph) nearestInsertion();
                 else std::cout << " This graph is not fully connected\n";
                 break;
             case 0:
@@ -280,8 +280,38 @@ void Menu::christofides(){
     std::cout << " Execution Time: " << time << " milliseconds\n";
     std::cout << " Compared to triangular approximation, distance improved by " << ((triangular - dist) / triangular) * 100 << " %\n\n";
 }
+void Menu::nearestInsertion() {
+    std::queue<Vertex*> tour;
+    double triangular = 0;
+    supervisor->getGraph().triangularApproximation(tour, triangular);
+
+
+    std::vector<Vertex *> path;
+    double dist = 0;
+
+    std::chrono::steady_clock::time_point startTime = std::chrono::steady_clock::now();
+
+    supervisor->getGraph().nearestInsertion(path, dist);
+
+    std::chrono::steady_clock::time_point endTime = std::chrono::steady_clock::now();
+
+    std::chrono::duration<double, std::milli> duration = std::chrono::duration_cast<std::chrono::duration<double, std::milli>>(endTime - startTime);
+
+    double time = duration.count();
+
+    if (path.size() <= 50) {
+        std::cout << "\n Path: ";
+        for (auto p : path)
+            std::cout << p->getId() << " ";
+    }
+
+    std::cout << "\n Distance: " << dist << " meters\n";
+    std::cout << " Execution Time: " << time << " milliseconds\n";
+    std::cout << " Compared to triangular approximation, distance improved by " << ((triangular - dist) / triangular) * 100 << " %\n\n";
+}
 
 void Menu::end() {
     printf("\n");
     printf("===========================================================");
 }
+

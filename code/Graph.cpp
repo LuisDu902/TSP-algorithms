@@ -369,3 +369,50 @@ std::vector<Vertex*> Graph::hamiltonianCycle(std::stack<Vertex*> circuit){
     }
     return tour;
 }
+
+void Graph::nearestInsertion(std::vector<Vertex *> tour,double &dist){
+
+    for (auto vertex : vertexSet) {
+        vertex->setVisited(false);
+        vertex->setPath(nullptr);
+        vertex->setPathCost(std::numeric_limits<double>::infinity());
+    }
+
+    tour.push_back(vertexSet[0]);
+    vertexSet[0]->setVisited(true);
+
+    while (tour.size() < vertexSet.size()) {
+        Vertex* currentNode = nullptr;
+        Edge* nextNode = nullptr;
+        double minDistance = std::numeric_limits<double>::infinity();
+
+        for (auto v : tour) {
+            for (auto e : v->getAdj()) {
+                if (!e->getDest()->isVisited()) {
+                    double distance = e->getDistance();
+                    if (distance < minDistance) {
+                        minDistance = distance;
+                        currentNode = v;
+                        nextNode = e;
+                    }
+                }
+            }
+        }
+
+        auto it = std::find(tour.begin(), tour.end(), currentNode);
+        tour.insert(it + 1, nextNode->getDest());
+        nextNode->getDest()->setVisited(true);
+        nextNode->getDest()->setPath(nextNode);
+        nextNode->getDest()->setPathCost(minDistance);
+    }
+    tour.push_back(vertexSet[0]);
+    for (int i= 0; i < tour.size()-1; i++){
+        if (tour[i]->getId() < tour[i+1]->getId())
+            dist += tour[i+1]->getAdj()[tour[i]->getId()]->getDistance();
+        else
+            dist += tour[i]->getAdj()[tour[i+1]->getId()]->getDistance();
+    }
+
+    twoOpt(tour,dist);
+
+}
