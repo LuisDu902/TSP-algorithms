@@ -3,10 +3,7 @@
 
 #include <iostream>
 #include <climits>
-#include <list>
-#include <atomic>
 #include <thread>
-#include <unordered_set>
 
 #include "Supervisor.h"
 
@@ -17,9 +14,9 @@ public:
 
     /**
      * Initial menu where the user is able to choose what type of graph they want to create:
-     * (1) Toy-Graphs
-     * (2) Real-world Graphs
-     * (3) Extra-Fully-Connected Graphs
+     * <pre><b>(1)</b> Toy-Graphs</pre>
+     * <pre><b>(2)</b> Real-world Graphs</pre>
+     * <pre><b>(3)</b> Extra-Fully-Connected Graphs</pre>
      */
     void init();
 
@@ -28,19 +25,24 @@ public:
      */
     static void end();
 
+
+private:
+
+    Supervisor* supervisor;
+
     /**
-     * Toy Graphs menu where the user is able to choose what toy graph they want to create:
-     * (1) Shipping
-     * (2) Stadiums
-     * (3) Tourism
-     */
+    * Toy Graphs menu where the user is able to choose what toy graph they want to create:
+    * <pre><b>(1)</b> Shipping</pre>
+    * <pre><b>(2)</b> Stadiums</pre>
+    * <pre><b>(3)</b> Tourism</pre>
+    */
     void toyGraphs();
 
     /**
      * Real-World Graphs menu where the user is able to choose what real world graph they want to create:
-     * (1) Graph1
-     * (2) Graph2
-     * (3) Graph3
+     * <pre><b>(1)</b> Graph1</pre>
+     * <pre><b>(2)</b> Graph2</pre>
+     * <pre><b>(3)</b> Graph3</pre>
      */
     void realWorldGraphs();
 
@@ -51,26 +53,36 @@ public:
 
     /**
      * Operations menu where the user is able to choose what operation they want to perform:
-     * (1) Brute Force
-     * (2) Heuristics
-     * (3) to be done
+     * <pre><b>(1)</b> Brute Force</pre>
+     * <pre><b>(2)</b> Heuristics</pre>
+     * <pre><b>(3)</b> Christofides with 2-opt</pre>
+     * <pre><b>(4)</b> Nearest neighbour</pre>
+     * <pre><b>(5)</b> Nearest insertion</pre>
      */
     void operations(bool smallGraph, bool completeGraph);
 
     /**
-     * Performs the brute-force approach to solve the traveling salesman problem (TSP) on the graph.
+     * Performs the brute-force approach to solve the traveling salesman problem (TSP) on the graph.\n
      * Prints the optimal path, its distance, and the execution time.
      */
     void bruteForce();
-    void heuristics();
 
+    /**
+     * Performs the nearest neighbor algorithm to solve the traveling salesman problem (TSP).\n
+     * Prints the path, its distance, and the execution time.
+     */
     void nearestNeighbor();
-private:
 
-    Supervisor* supervisor;
-
+    /**
+     * Performs the triangular approximation algorithm to solve the traveling salesman problem (TSP).\n
+     * Prints the path, its distance, and the execution time.
+     */
     void triangularApproximation();
 
+    /**
+     * Performs the christofides algorithm combined with 2-opt to solve the traveling salesman problem (TSP).\n
+     * Prints the path, its distance, the execution time and the improvements compared to the triangular approximation. .
+     */
     void christofides();
 };
 #endif //DA_MENU_H

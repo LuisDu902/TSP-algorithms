@@ -120,7 +120,7 @@ void Graph::prim() {
         v->setMstAdj({});
         v->setDegree(0);
     }
-    MutablePriorityQueue<Vertex> q;
+    PriorityQueue q;
 
     vertexSet[0]->setPathCost(0);
     q.insert(vertexSet[0]);

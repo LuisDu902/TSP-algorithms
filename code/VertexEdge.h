@@ -11,7 +11,7 @@
 #include <climits>
 #include <set>
 #include <unordered_set>
-#include "MutablePriorityQueue.h"
+#include "PriorityQueue.h"
 
 #define INF std::numeric_limits<int>::max()
 
@@ -43,8 +43,7 @@ public:
     void setPath(Edge *path);
     void setMstAdj(std::vector<Edge*> mstAdj);
 
-    friend class MutablePriorityQueue<Vertex>;
-
+    friend class PriorityQueue;
 
 protected:
     int id;

@@ -68,9 +68,9 @@ public:
      * @brief Solves the Traveling Salesman Problem (TSP) using triangular approximation algorithm
      *
      * This function applies the triangular approximation algorithm to the graph, which consists in :\n
-     *    (1) Constructing a minimum spanning tree (MST) of the graph using Prim's algorithm.\n
-     *    (2) Traversing the tree using a pre-order traversal.\n
-     *    (3) Computing a Hamiltonian cycle that visits all vertexes exactly once based on the pre-order.\n
+     * <pre><b>(1)</b> Constructing a minimum spanning tree (MST) of the graph using Prim's algorithm.</pre>
+     * <pre><b>(2)</b> Traversing the tree using a pre-order traversal.</pre>
+     * <pre><b>(3)</b> Computing a Hamiltonian cycle that visits all vertexes exactly once based on the pre-order.</pre>
      *
      * @param tour The queue to store the resulting tour.
      * @param dist The reference variable to accumulate the total distance of the tour.
@@ -83,12 +83,12 @@ public:
     /**
      * @brief Solves the Traveling Salesman Problem (TSP) using nearest neighbor algorithm
      *
-     * This function applies the nearest neighbor algorithm to the graph, which consists in:
-     *    (1) Initializing all vertexes as unvisited.\n
-     *    (2) Selecting the first vertex, setting it as the current vertex. Mark it as visited.\n
-     *    (3) Finding out the shortest edge connecting the current vertex u and an unvisited vertex v.\n
-     *    (4) Setting v as the current vertex. Mark v as visited.\n
-     *    (5) Repeating steps 3 and 4 until all the vertexes are visited.\n
+     * This function applies the nearest neighbor algorithm to the graph, which consists in:\n
+     * <pre><b>(1)</b> Initializing all vertexes as unvisited.</pre>
+     * <pre><b>(2)</b> Selecting the first vertex, setting it as the current vertex. Mark it as visited.</pre>
+     * <pre><b>(3)</b> Finding out the shortest edge connecting the current vertex u and an unvisited vertex v.</pre>
+     * <pre><b>(4)</b> Setting v as the current vertex. Mark v as visited.</pre>
+     * <pre><b>(5)</b> Repeating steps 3 and 4 until all the vertexes are visited.</pre>
      *
      * @param tour The vector to store the resulting tour.
      * @param distance The reference variable to accumulate the total distance of the tour.
@@ -101,13 +101,13 @@ public:
     /**
      * @brief Solves the Traveling Salesman Problem (TSP) using christofides algorithm combined with 2-opt
      *
-     * This function applies the christofides algorithm to the graph, which consists in:
-     *    (1) Constructing a minimum spanning tree (MST) of the graph using Prim's algorithm.\n
-     *    (2) Identifying the vertexes with odd degrees in the MST.\n
-     *    (3) Constructing a minimum-weight perfect matching among the odd-degree vertexes.\n
-     *    (4) Computing an Eulerian circuit in the graph by combining the MST edges and matching edges.\n
-     *    (5) Obtaining a Hamiltonian cycle by removing duplicate vertexes from the circuit.\n
-     *    (6) Improving the tour using the 2-opt optimization algorithm.
+     * This function applies the christofides algorithm to the graph, which consists in:\n
+     * <pre><b>(1)</b> Constructing a minimum spanning tree (MST) of the graph using Prim's algorithm.</pre>
+     * <pre><b>(2)</b> Identifying the vertexes with odd degrees in the MST.</pre>
+     * <pre><b>(3)</b> Constructing a minimum-weight perfect matching among the odd-degree vertexes.</pre>
+     * <pre><b>(4)</b> Computing an Eulerian circuit in the graph by combining the MST edges and matching edges.</pre>
+     * <pre><b>(5)</b> Obtaining a Hamiltonian cycle by removing duplicate vertexes from the circuit.</pre>
+     * <pre><b>(6)</b> Improving the tour using the 2-opt optimization algorithm.</pre>
      *
      * @param tour The vector to store the resulting tour.
      * @param distance The reference variable to accumulate the total distance of the tour.
