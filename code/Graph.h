@@ -135,7 +135,7 @@ public:
      * Complexity:
      * O(V * (V + E)), where V is the number of vertexes and E the number of edges in the graph.
      */
-    void nearestInsertion(std::vector<Vertex *> path,double &dist);
+    void nearestInsertion(std::vector<Vertex *> &tour,double &dist);
 private:
     std::vector<Vertex *> vertexSet;
 

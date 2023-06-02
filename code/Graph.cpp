@@ -370,7 +370,7 @@ std::vector<Vertex*> Graph::hamiltonianCycle(std::stack<Vertex*> circuit){
     return tour;
 }
 
-void Graph::nearestInsertion(std::vector<Vertex *> tour,double &dist){
+void Graph::nearestInsertion(std::vector<Vertex *>& tour,double &dist){
 
     for (auto vertex : vertexSet) {
         vertex->setVisited(false);
@@ -385,19 +385,16 @@ void Graph::nearestInsertion(std::vector<Vertex *> tour,double &dist){
         Vertex* currentNode = nullptr;
         Edge* nextNode = nullptr;
         double minDistance = std::numeric_limits<double>::infinity();
-
-        for (auto v : tour) {
-            for (auto e : v->getAdj()) {
+            for (auto e : tour[tour.size()-1]->getAdj()) {
                 if (!e->getDest()->isVisited()) {
                     double distance = e->getDistance();
                     if (distance < minDistance) {
                         minDistance = distance;
-                        currentNode = v;
+                        currentNode = tour[tour.size()-1];
                         nextNode = e;
                     }
                 }
             }
-        }
 
         auto it = std::find(tour.begin(), tour.end(), currentNode);
         tour.insert(it + 1, nextNode->getDest());
