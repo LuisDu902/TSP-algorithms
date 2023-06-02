@@ -117,6 +117,25 @@ public:
      */
     void christofidesTSP(std::vector<Vertex *> &tour, double &distance);
 
+    /**
+     * @brief Solves the Traveling Salesman Problem (TSP) using the nearest insertion heuristic with 2-opt.
+     *
+     * This function applies the nearest insertion heuristic to find a tour for thegraph.
+     *
+     * <pre><b>(1)</b> The tour starts with only one vertexes.
+     * <pre><b>(2)</b> Finding the minimun distance connection to the vertex among the adjacent vertexes.
+     * <pre><b>(2)</b> Repeat number 2 until no more vertexes are left.
+     * <pre><b>(3)</b> Improving the tour using the 2-opt optimization algorithm.</pre>
+     *
+     * @param tour The vector to store the resulting tour.
+     * @param distance The reference variable to accumulate the total distance of the tour.
+     *
+     *
+     * @par
+     * Complexity:
+     * O(V * (V + E)), where V is the number of vertexes and E the number of edges in the graph.
+     */
+    void nearestInsertion(std::vector<Vertex *> path,double &dist);
 private:
     std::vector<Vertex *> vertexSet;
 
@@ -335,6 +354,8 @@ private:
      * O(V³), where V is the number of vertexes in the graph
      */
     void twoOpt(std::vector<Vertex *> &tour, double &dist);
+
+
 };
 
 #endif //DA_GRAPH_H
