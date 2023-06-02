@@ -5,6 +5,12 @@
 #include <vector>
 #include <limits>
 #include <algorithm>
+#include <stack>
+#include <queue>
+#include <cmath>
+#include <climits>
+#include <set>
+#include <unordered_set>
 #include "MutablePriorityQueue.h"
 
 #define INF std::numeric_limits<int>::max()

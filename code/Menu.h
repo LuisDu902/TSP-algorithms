@@ -55,7 +55,7 @@ public:
      * (2) Heuristics
      * (3) to be done
      */
-    void operations();
+    void operations(bool smallGraph, bool completeGraph);
 
     /**
      * Performs the brute-force approach to solve the traveling salesman problem (TSP) on the graph.

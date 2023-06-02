@@ -19,6 +19,29 @@ void Graph::addEdge(Vertex* &v1, Vertex* &v2, double distance) const{
     e2->setReverse(e1);
 }
 
+double Graph::distance(Vertex* v1, Vertex* v2){
+    for (Edge* e: v1->getAdj())
+        if (e->getDest() == v2)
+            return e->getDistance();
+    return haversine(v1->getLatitude(),v1->getLongitude(),v2->getLatitude(),v2->getLongitude());
+}
+
+double Graph::haversine(double lat1, double lon1, double lat2, double lon2) {
+    double dLat = (lat2 - lat1) * M_PI / 180.0;
+    double dLon = (lon2 - lon1) * M_PI / 180.0;
+
+    // convert to radians
+    lat1 = (lat1) * M_PI / 180.0;
+    lat2 = (lat2) * M_PI / 180.0;
+
+    // apply formula
+    double a = pow(sin(dLat / 2), 2) + pow(sin(dLon / 2), 2) * cos(lat1) * cos(lat2);
+    double rad = 6371;
+    double c = 2 * asin(sqrt(a));
+
+    return rad * c * 1000;
+}
+
 std::vector<Vertex *> Graph::getVertexSet() const {
     return this->vertexSet;
 }
@@ -71,9 +94,9 @@ void Graph::tspBTRec(int curVertex, int curIndex, double &minDist, std::stack<Ve
         Vertex* v2 = edge->getDest();
         double distance = edge->getDistance();
         if(!v2->isVisited() && v1->getPathCost() + distance < minDist) {
-            v2->setVisited(true);
             v2->setPath(edge);
             v2->setPathCost(v1->getPathCost() + distance);
+            v2->setVisited(true);
             tspBTRec(v2->getId(), curIndex+1,minDist,bestPath);
             v2->setVisited(false);
         }
@@ -121,8 +144,33 @@ void Graph::prim() {
     }
 }
 
+void Graph::preOrder(Vertex* vertex, std::queue<Vertex *> &l) {
+    l.push(vertex);
+    vertex->setVisited(true);
+    for (Edge* edge : vertex->getMstAdj()) {
+        Vertex* w = edge->getDest();
+        if (!w->isVisited())
+            preOrder(w,l);
+    }
+}
+
+std::queue<Vertex *> Graph::preOrderTraversal() {
+    std::queue<Vertex *> l;
+
+    for (auto v : vertexSet)
+        v->setVisited(false);
+
+    Vertex* startingNode = vertexSet[0];
+
+    preOrder(startingNode,l);
+
+    return l;
+}
+
 void Graph::triangularApproximation(std::queue<Vertex*> &tour, double &dist) {
+
     prim();
+
     tour = preOrderTraversal();
     tour.push(vertexSet[0]);
 
@@ -138,58 +186,13 @@ void Graph::triangularApproximation(std::queue<Vertex*> &tour, double &dist) {
     }
 }
 
-
-
-double Graph::haversine(double lat1, double lon1, double lat2, double lon2) {
-    double dLat = (lat2 - lat1) * M_PI / 180.0;
-    double dLon = (lon2 - lon1) * M_PI / 180.0;
-
-    // convert to radians
-    lat1 = (lat1) * M_PI / 180.0;
-    lat2 = (lat2) * M_PI / 180.0;
-
-    // apply formula
-    double a = pow(sin(dLat / 2), 2) + pow(sin(dLon / 2), 2) * cos(lat1) * cos(lat2);
-    double rad = 6371;
-    double c = 2 * asin(sqrt(a));
-    return rad * c * 1000;
-
-}
-
-void Graph::preOrder(Vertex* vertex, std::queue<Vertex *> &l) {
-    l.push(vertex);
-    vertex->setVisited(true);
-    for (Edge* edge : vertex->getMstAdj()) {
-        Vertex* w = edge->getDest();
-        if (!w->isVisited())
-            preOrder(w,l);
-    }
-}
-
-
-std::queue<Vertex *> Graph::preOrderTraversal() {
-    std::queue<Vertex *> l;
-
+void Graph::nearestNeighborTSP(std::vector<Vertex *> &tour, double &distance) {
     for (auto v : vertexSet)
         v->setVisited(false);
 
-    Vertex* startingNode = vertexSet[0];
-
-    preOrder(startingNode,l);
-    return l;
-}
-
-double Graph::distance(Vertex* v1, Vertex* v2){
-    for (Edge* e: v1->getAdj())
-        if (e->getDest() == v2)
-            return e->getDistance();
-    return haversine(v1->getLatitude(),v1->getLongitude(),v2->getLatitude(),v2->getLongitude());
-}
-
-void Graph::nearestNeighborTSP(std::vector<Vertex *> &tour, double &distance) {
-    for (auto v : vertexSet) v->setVisited(false);
     Vertex* currentVertex = vertexSet[0];
     currentVertex->setVisited(true);
+
     while(true){
         tour.push_back(currentVertex);
         double minDist = INT_MAX;
@@ -211,136 +214,31 @@ void Graph::nearestNeighborTSP(std::vector<Vertex *> &tour, double &distance) {
     }
 
     distance += currentVertex->getAdj()[0]->getDistance();
+    tour.push_back(vertexSet[0]);
 }
 
-void Graph::christofides(std::vector<Vertex *> &tour, double &dist) {
+void Graph::christofidesTSP(std::vector<Vertex *> &tour, double &dist) {
 
-    /* (1) Prim algorithm to get a MST - T */
     prim();
 
-    /* (2) Get all the vertexes with odd degree in T */
     std::unordered_set<Vertex*> oddVertexes = oddDegreeVertexes();
-
-    /* (3) Add a minimum-weight perfect-matching of the odd vertices in T */
     perfectMatching(oddVertexes);
 
-    /* (4) Find a Eulerian Circuit */
-    std::stack<Vertex*> circuit = eurelianCircuit();
+    std::stack<Vertex*> circuit = eulerianCircuit();
 
-    /* (5) Transform the Circuit into a Hamiltonian Cycle */
     tour = hamiltonianCycle(circuit);
     tour.push_back(vertexSet[0]);
 
-    for (int i = 0; i<tour.size()-1; i++)
-        dist += distance(tour[i], tour[i+1]);
+    for (int i = 0; i < tour.size()-1; i++){
+        if (tour[i]->getId() < tour[i+1]->getId())
+            dist += tour[i+1]->getAdj()[tour[i]->getId()]->getDistance();
+        else
+            dist += tour[i]->getAdj()[tour[i+1]->getId()]->getDistance();
+    }
 
-    /* (6) Further improve the result with a 2-opt algorithm */
     twoOpt(tour, dist);
+
 }
-
-void Graph::twoOpt(std::vector<Vertex*>& tour, double& dist) {
-    int k = 0;
-
-    while (k < tour.size()) {
-
-        double bestDistance = dist;
-        std::vector<Vertex*> bestTour = tour;
-
-        // Iterate through each edge in the tour
-        for (int i = k; i < tour.size() - 2; ++i) {
-            Vertex* vertexA = tour[i];
-            Vertex* vertexB = tour[i + 1];
-
-            // Iterate through all non-adjacent edges
-            for (int j = i + 2; j < tour.size() - 1; ++j) {
-                Vertex* vertexC = tour[j];
-                Vertex* vertexD = tour[j + 1];
-                double d1, d2, d3, d4;
-                if (vertexA->getId() < vertexB->getId()){
-                    d1 = vertexB->getAdj()[vertexA->getId()]->getDistance();
-                } else{
-                    d1 = vertexA->getAdj()[vertexB->getId()]->getDistance();
-                }
-                if (vertexC->getId() < vertexD->getId()){
-                    d2 = vertexD->getAdj()[vertexC->getId()]->getDistance();
-                } else{
-                    d2 = vertexC->getAdj()[vertexD->getId()]->getDistance();
-                }
-                if (vertexA->getId() < vertexC->getId()){
-                    d3 = vertexC->getAdj()[vertexA->getId()]->getDistance();
-                } else{
-                    d3 = vertexA->getAdj()[vertexC->getId()]->getDistance();
-                }
-                if (vertexB->getId() < vertexD->getId()){
-                    d4 = vertexD->getAdj()[vertexB->getId()]->getDistance();
-                } else{
-                    d4 = vertexB->getAdj()[vertexD->getId()]->getDistance();
-                }
-
-
-
-                // Check if swapping edges (vertexA, vertexB) and (vertexC, vertexD) improves the tour
-                double newDistance = dist - (d1 + d2) + (d3 + d4);
-                if (newDistance < bestDistance) {
-                    bestDistance = newDistance;
-                    bestTour = tour;
-
-                    // Reverse the portion of the tour between vertexB and vertexC
-                    std::reverse(bestTour.begin() + i + 1, bestTour.begin() + j + 1);
-
-                }
-            }
-        }
-
-        // Update the tour and distance with the best result of this iteration
-        tour = bestTour;
-        dist = bestDistance;
-        k += 75;
-    }
-}
-
-
-std::vector<Vertex*> Graph::hamiltonianCycle(std::stack<Vertex*> circuit){
-    for (auto v: vertexSet)
-        v->setVisited(false);
-    std::vector<Vertex*> tour;
-    Vertex* cur;
-    while (!circuit.empty()){
-        cur = circuit.top();
-        if (!cur->isVisited()){
-            cur->setVisited(true);
-            tour.push_back(cur);
-        }
-        circuit.pop();
-    }
-    return tour;
-}
-
-/*0(E)*/
-std::stack<Vertex*> Graph::eurelianCircuit() {
-    for (auto v: vertexSet)
-        for (auto e : v->getMstAdj()) {
-            e->setSelected(false);
-            e->getReverse()->setSelected(false);
-        }
-    std::stack<Vertex*> circuit;
-    Vertex* startingNode = vertexSet[0];
-    dfs(startingNode, circuit);
-    return circuit;
-}
-
-void Graph::dfs(Vertex* v, std::stack<Vertex*> &circuit){
-    for (auto e: v->getMstAdj()) {
-        if (!e->isSelected()) {
-            e->setSelected(true);
-            e->getReverse()->setSelected(true);
-            dfs(e->getDest(), circuit);
-        }
-    }
-    circuit.push(v);
-}
-
-
 
 std::unordered_set<Vertex*> Graph::oddDegreeVertexes() {
     std::unordered_set<Vertex*> oddVertexes;
@@ -357,7 +255,6 @@ void Graph::matchVertexes(Edge* e){
     auto e2 = e->getOrig()->addMstEdge(e->getDest(), e->getDistance());
     e1->setReverse(e2);
     e2->setReverse(e1);
-    //std::cout << e->getDest()->getId() << " " << e->getOrig()->getId() << " : " << e->getDistance() << '\n';
 }
 
 void Graph::perfectMatching(const std::unordered_set<Vertex*>& oddVertexes){
@@ -384,4 +281,83 @@ void Graph::perfectMatching(const std::unordered_set<Vertex*>& oddVertexes){
         }
         if (explored == oddVertexes.size()) return;
     }
+}
+
+std::stack<Vertex*> Graph::eulerianCircuit() {
+    for (auto v: vertexSet) {
+        for (auto e: v->getMstAdj()) {
+            e->setSelected(false);
+            e->getReverse()->setSelected(false);
+        }
+    }
+    std::stack<Vertex*> circuit;
+    Vertex* startingNode = vertexSet[0];
+    heirholzer(startingNode, circuit);
+    return circuit;
+}
+
+void Graph::heirholzer(Vertex* v, std::stack<Vertex*> &circuit){
+    for (auto e: v->getMstAdj()) {
+        if (!e->isSelected()) {
+            e->setSelected(true);
+            e->getReverse()->setSelected(true);
+            heirholzer(e->getDest(), circuit);
+        }
+    }
+    circuit.push(v);
+}
+
+void Graph::twoOpt(std::vector<Vertex*>& tour, double& dist) {
+    bool improved = true;
+    int n = 5;
+    while (improved && n--) {
+        improved = false;
+
+        for (int i = 0; i < tour.size() - 2; i++) {
+            Vertex* vertexA = tour[i];
+            Vertex* vertexB = tour[i + 1];
+            double dAB = (vertexA->getId() > vertexB->getId()) ? vertexA->getAdj()[vertexB->getId()]->getDistance() : vertexB->getAdj()[vertexA->getId()]->getDistance();
+
+            for (int j = i + 2; j < tour.size()-1; j++) {
+                Vertex* vertexC = tour[j];
+                Vertex* vertexD = tour[j + 1];
+
+                double dCD = (vertexC->getId() > vertexD->getId()) ? vertexC->getAdj()[vertexD->getId()]->getDistance() : vertexD->getAdj()[vertexC->getId()]->getDistance();
+                double dAC = (vertexA->getId() > vertexC->getId()) ? vertexA->getAdj()[vertexC->getId()]->getDistance() : vertexC->getAdj()[vertexA->getId()]->getDistance();
+                double dBD = (vertexB->getId() > vertexD->getId()) ? vertexB->getAdj()[vertexD->getId()]->getDistance() : vertexD->getAdj()[vertexB->getId()]->getDistance();
+
+                double currentDistance = dAB + dCD;
+                double newDistance = dAC + dBD;
+
+                if (newDistance < currentDistance) {
+                    std::reverse(tour.begin() + i + 1, tour.begin() + j + 1);
+                    improved = true;
+                }
+            }
+        }
+    }
+    dist = 0;
+    for (int i= 0; i < tour.size()-1; i++){
+        if (tour[i]->getId() < tour[i+1]->getId())
+            dist += tour[i+1]->getAdj()[tour[i]->getId()]->getDistance();
+        else
+            dist += tour[i]->getAdj()[tour[i+1]->getId()]->getDistance();
+    }
+}
+
+std::vector<Vertex*> Graph::hamiltonianCycle(std::stack<Vertex*> circuit){
+    for (auto v: vertexSet)
+        v->setVisited(false);
+
+    std::vector<Vertex*> tour;
+    Vertex* cur;
+    while (!circuit.empty()){
+        cur = circuit.top();
+        if (!cur->isVisited()){
+            cur->setVisited(true);
+            tour.push_back(cur);
+        }
+        circuit.pop();
+    }
+    return tour;
 }

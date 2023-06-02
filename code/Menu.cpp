@@ -35,8 +35,8 @@ void Menu::init() {
 }
 
 void Menu::toyGraphs() {
-    std::cin.clear();
     int option;
+    bool isComplete = true;
     std::string filePath = "../data/Toy-Graphs/";
     while(true){
         std::cout << "\n What graph?\n\n"
@@ -49,6 +49,7 @@ void Menu::toyGraphs() {
         switch (option) {
             case 1:
                 filePath.append("shipping.csv");
+                isComplete = false;
                 break;
             case 2:
                 filePath.append("stadiums.csv");
@@ -66,7 +67,7 @@ void Menu::toyGraphs() {
         break;
     }
     supervisor = new Supervisor(filePath);
-    operations();
+    operations(true, isComplete);
 }
 
 
@@ -92,11 +93,12 @@ void Menu::extraGraphs() {
         }
     }
     supervisor = new Supervisor(filePath);
-    operations();
+    operations(false, true);
 }
 
 void Menu::realWorldGraphs() {
     int option;
+    bool isComplete = false;
     std::string filePath = "../data/Real-world Graphs/";
     while(true){
         std::cout << "\n What graph?\n\n"
@@ -109,6 +111,7 @@ void Menu::realWorldGraphs() {
         switch (option) {
             case 1:
                 filePath.append("graph1");
+                isComplete = true;
                 break;
             case 2:
                 filePath.append("graph2");
@@ -126,28 +129,41 @@ void Menu::realWorldGraphs() {
         break;
     }
     supervisor = new Supervisor(filePath);
-    operations();
+    operations(false, isComplete);
 }
 
-void Menu::operations() {
+void Menu::operations(bool smallGraph, bool completeGraph) {
     int option;
     while(true) {
         std::cout << " Choose your operation?\n\n"
                      " [1] Brute force\n"
-                     " [2] Triangular Approximation\n"
-                     " [3] Other Heuristics\n\n"
+                     " [2] Triangular approximation\n"
+                     " [3] Christofides with 2-opt\n"
+                     " [4] Nearest neighbour\n"
+                     " [5] Nearest insertion\n\n"
                      " Option: ";
 
         std::cin >> option;
         switch (option) {
             case 1:
-                bruteForce();
+                if (smallGraph) bruteForce();
+                else std::cout << " This graph is too large to use brute force!!!\n";
                 break;
             case 2:
-                triangularApproximation();
+                if (!smallGraph || completeGraph) triangularApproximation();
+                else std::cout << " This graph is not fully connected and we can't calculate the distances\n";
                 break;
             case 3:
-                heuristics();
+                if (completeGraph) christofides();
+                else std::cout << " This graph is not fully connected\n";
+                break;
+            case 4:
+                if (completeGraph) nearestNeighbor();
+                else std::cout << " This graph is not fully connected\n";
+                break;
+            case 5:
+                if (completeGraph) christofides();
+                else std::cout << " This graph is not fully connected\n";
                 break;
             case 0:
                 std::cout << "\n";
@@ -178,7 +194,7 @@ void Menu::bruteForce() {
         std::cout << path.top()->getId() << " ";
         path.pop();
     }
-    std::cout << "\n Distance: " << dist << '\n';
+    std::cout << "\n Distance: " << dist << " meters\n";
     std::cout << " Execution Time: " << time << " milliseconds\n\n";
 }
 
@@ -206,42 +222,14 @@ void Menu::triangularApproximation(){
         }
     }
 
-    std::cout << "\n Distance: " << dist << '\n';
+    std::cout << "\n Distance: " << dist << " meters\n";
     std::cout << " Execution Time: " << time << " milliseconds\n\n";
 }
 
-void Menu::heuristics() {
-    int option;
-    while(true) {
-        std::cout << " Choose your preferred heuristic \n\n"
-                     " [1] Christofides\n"
-                     " [2] Nearest neighbour\n"
-                     " [3] Nearest insertion\n\n"
-                     " Option: ";
 
-        std::cin >> option;
-        switch (option) {
-            case 1:
-                christofides();
-                break;
-            case 2:
-                nearestNeighbor();
-                break;
-            case 3:
-                //
-                break;
-            case 0:
-                std::cout << "\n";
-                return;
-            default:
-                std::cout << "\n Invalid input, try again. \n\n";
-                continue;
-        }
-    }
-}
 void Menu::nearestNeighbor() {
     std::vector<Vertex *> tour;
-    double dist = 0.0;
+    double dist = 0;
 
     std::chrono::steady_clock::time_point startTime = std::chrono::steady_clock::now();
 
@@ -259,18 +247,22 @@ void Menu::nearestNeighbor() {
             std::cout << v->getId() << " ";
     }
 
-    std::cout << "0\n Distance: " << dist << '\n';
+    std::cout << "\n Distance: " << dist << " meters\n";
     std::cout << " Execution Time: " << time << " milliseconds\n\n";
   
 }
 
 void Menu::christofides(){
+    std::queue<Vertex*> tour;
+    double triangular = 0;
+    supervisor->getGraph().triangularApproximation(tour, triangular);
+
     std::vector<Vertex *> path;
     double dist = 0;
 
     std::chrono::steady_clock::time_point startTime = std::chrono::steady_clock::now();
 
-    supervisor->getGraph().christofides(path, dist);
+    supervisor->getGraph().christofidesTSP(path, dist);
 
     std::chrono::steady_clock::time_point endTime = std::chrono::steady_clock::now();
 
@@ -284,9 +276,9 @@ void Menu::christofides(){
             std::cout << p->getId() << " ";
     }
 
-    std::cout << "\n Distance: " << dist << '\n';
-    std::cout << " Execution Time: " << time << " milliseconds\n\n";
-
+    std::cout << "\n Distance: " << dist << " meters\n";
+    std::cout << " Execution Time: " << time << " milliseconds\n";
+    std::cout << " Compared to triangular approximation, distance improved by " << ((triangular - dist) / triangular) * 100 << " %\n\n";
 }
 
 void Menu::end() {
