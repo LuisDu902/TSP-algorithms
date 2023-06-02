@@ -309,22 +309,23 @@ void Graph::heirholzer(Vertex* v, std::stack<Vertex*> &circuit){
 
 void Graph::twoOpt(std::vector<Vertex*>& tour, double& dist) {
     bool improved = true;
-    int n = 5;
+    double dAB, dAC, dCD, dBD;
+    Vertex* vertexA; Vertex* vertexB; Vertex* vertexC; Vertex* vertexD;
+    int n = 3;
     while (improved && n--) {
         improved = false;
 
         for (int i = 0; i < tour.size() - 2; i++) {
-            Vertex* vertexA = tour[i];
-            Vertex* vertexB = tour[i + 1];
-            double dAB = (vertexA->getId() > vertexB->getId()) ? vertexA->getAdj()[vertexB->getId()]->getDistance() : vertexB->getAdj()[vertexA->getId()]->getDistance();
+            vertexA = tour[i];
+            vertexB = tour[i + 1];
 
+            dAB = (vertexA->getId() > vertexB->getId()) ? vertexA->getAdj()[vertexB->getId()]->getDistance() : vertexB->getAdj()[vertexA->getId()]->getDistance();
             for (int j = i + 2; j < tour.size()-1; j++) {
-                Vertex* vertexC = tour[j];
-                Vertex* vertexD = tour[j + 1];
-
-                double dCD = (vertexC->getId() > vertexD->getId()) ? vertexC->getAdj()[vertexD->getId()]->getDistance() : vertexD->getAdj()[vertexC->getId()]->getDistance();
-                double dAC = (vertexA->getId() > vertexC->getId()) ? vertexA->getAdj()[vertexC->getId()]->getDistance() : vertexC->getAdj()[vertexA->getId()]->getDistance();
-                double dBD = (vertexB->getId() > vertexD->getId()) ? vertexB->getAdj()[vertexD->getId()]->getDistance() : vertexD->getAdj()[vertexB->getId()]->getDistance();
+                vertexC = tour[j];
+                vertexD = tour[j + 1];
+                dCD = (vertexC->getId() > vertexD->getId()) ? vertexC->getAdj()[vertexD->getId()]->getDistance() : vertexD->getAdj()[vertexC->getId()]->getDistance();
+                dAC = (vertexA->getId() > vertexC->getId()) ? vertexA->getAdj()[vertexC->getId()]->getDistance() : vertexC->getAdj()[vertexA->getId()]->getDistance();
+                dBD = (vertexB->getId() > vertexD->getId()) ? vertexB->getAdj()[vertexD->getId()]->getDistance() : vertexD->getAdj()[vertexB->getId()]->getDistance();
 
                 double currentDistance = dAB + dCD;
                 double newDistance = dAC + dBD;
@@ -332,6 +333,9 @@ void Graph::twoOpt(std::vector<Vertex*>& tour, double& dist) {
                 if (newDistance < currentDistance) {
                     std::reverse(tour.begin() + i + 1, tour.begin() + j + 1);
                     improved = true;
+                    vertexA = tour[i];
+                    vertexB = tour[i + 1];
+                    dAB = (vertexA->getId() > vertexB->getId()) ? vertexA->getAdj()[vertexB->getId()]->getDistance() : vertexB->getAdj()[vertexA->getId()]->getDistance();
                 }
             }
         }
