@@ -74,8 +74,6 @@ public:
     void setSelected(bool selected);
     void setReverse(Edge *reverse);
 
-    struct cmp{bool operator()(const Edge* e1, const Edge* e2) const;};
-
 protected:
     Vertex * dest;
     Vertex *orig;

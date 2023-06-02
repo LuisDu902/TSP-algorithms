@@ -265,14 +265,14 @@ void Graph::perfectMatching(const std::vector<Vertex*>& oddVertexes){
     int explored = 0;
     bool isOdd, isNew;
 
-    for (Vertex* v: oddVertexes) {
+    for (int i = 0; i < oddVertexes.size()-1; i++) {
+        Vertex* v = oddVertexes[i];
         for (Edge *e: v->getAdj()) {
             isOdd = e->getDest()->getDegree() % 2 != 0;
             if (e->getDest()->getId() > v->getId() && isOdd)
                 edges.push_back(e);
         }
     }
-
     std::sort(edges.begin(), edges.end(), [](const Edge* a, const Edge* b) {
         return a->getDistance() < b->getDistance();
     });
