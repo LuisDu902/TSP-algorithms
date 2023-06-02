@@ -140,7 +140,7 @@ void Menu::operations(bool smallGraph, bool completeGraph) {
                      " [2] Triangular approximation\n"
                      " [3] Christofides with 2-opt\n"
                      " [4] Nearest neighbour\n"
-                     " [5] Nearest insertion\n\n"
+                     " [5] Nearest insertion with 2-opt\n\n"
                      " Option: ";
 
         std::cin >> option;
