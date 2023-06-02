@@ -91,10 +91,6 @@ double Edge::getDistance() const{
     return this->distance;
 }
 
-bool Edge::cmp::operator()(const Edge* e1, const Edge* e2) const {
-    return e1->distance < e2->distance;
-}
-
 bool Edge::isSelected() const {
     return this->selected;
 }

@@ -221,7 +221,7 @@ void Graph::christofidesTSP(std::vector<Vertex *> &tour, double &dist) {
 
     prim();
 
-    std::unordered_set<Vertex*> oddVertexes = oddDegreeVertexes();
+    std::vector<Vertex*> oddVertexes = oddDegreeVertexes();
     perfectMatching(oddVertexes);
 
     std::stack<Vertex*> circuit = eulerianCircuit();
@@ -240,11 +240,11 @@ void Graph::christofidesTSP(std::vector<Vertex *> &tour, double &dist) {
 
 }
 
-std::unordered_set<Vertex*> Graph::oddDegreeVertexes() {
-    std::unordered_set<Vertex*> oddVertexes;
+std::vector<Vertex*> Graph::oddDegreeVertexes() {
+    std::vector<Vertex*> oddVertexes;
     for (Vertex* v: vertexSet)
         if (v->getDegree() % 2 != 0)
-            oddVertexes.insert(v);
+            oddVertexes.push_back(v);
     return oddVertexes;
 }
 
@@ -257,21 +257,25 @@ void Graph::matchVertexes(Edge* e){
     e2->setReverse(e1);
 }
 
-void Graph::perfectMatching(const std::unordered_set<Vertex*>& oddVertexes){
+void Graph::perfectMatching(const std::vector<Vertex*>& oddVertexes){
     for (auto v: oddVertexes)
         v->setVisited(false);
 
-    std::set<Edge*, Edge::cmp> edges;
+    std::vector<Edge*> edges;
     int explored = 0;
     bool isOdd, isNew;
 
     for (Vertex* v: oddVertexes) {
         for (Edge *e: v->getAdj()) {
-            isOdd = oddVertexes.find(e->getDest()) != oddVertexes.end();
+            isOdd = e->getDest()->getDegree() % 2 != 0;
             if (e->getDest()->getId() > v->getId() && isOdd)
-                edges.insert(e);
+                edges.push_back(e);
         }
     }
+
+    std::sort(edges.begin(), edges.end(), [](const Edge* a, const Edge* b) {
+        return a->getDistance() < b->getDistance();
+    });
 
     for (auto edge : edges){
         isNew = !edge->getDest()->isVisited() && !edge->getOrig()->isVisited();

@@ -242,14 +242,14 @@ private:
       *
       * The function iterates over each vertex in the `vertexSet` and checks if its degree is odd.
       * If a vertex has an odd degree, it is added to the `oddVertexes` set. Finally, the function
-      * returns the set of vertexes with odd degrees.
+      * returns the vertexes with odd degrees.
       *
-      * @return An unordered set of vertexes with odd degrees.
+      * @return A vector of vertexes with odd degrees.
       *
       * @par Time complexity
       * O(V), where V is the number of vertexes in the graph.
       */
-    std::unordered_set<Vertex*> oddDegreeVertexes();
+    std::vector<Vertex*> oddDegreeVertexes();
 
     /**
      * @brief Performs a perfect matching among the odd-degree vertexes in the mst using a greedy algorithm.
@@ -259,12 +259,12 @@ private:
      * It then iteratively selects the lightest weight edge from the sorted set and matches two unmatched vertexes
      * until all vertexes are matched.
      *
-     * @param oddVertexes An unordered set of odd-degree vertexes to be matched.
+     * @param oddVertexes A vector of odd-degree vertexes to be matched.
      *
      * @par Time complexity
      * O(E * log(E)), where E is the number of edges in the graph.
      */
-    void perfectMatching(const std::unordered_set<Vertex *>& oddVertexes);
+    void perfectMatching(const std::vector<Vertex *>& oddVertexes);
 
     /**
      * @brief Matches two vertexes by adding corresponding edges between them.
