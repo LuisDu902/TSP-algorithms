@@ -3,7 +3,6 @@
 
 #include <iostream>
 #include <climits>
-#include <thread>
 
 #include "Supervisor.h"
 
