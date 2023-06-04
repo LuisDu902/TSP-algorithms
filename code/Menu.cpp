@@ -135,7 +135,7 @@ void Menu::realWorldGraphs() {
 void Menu::operations(bool smallGraph, bool completeGraph) {
     int option;
     while(true) {
-        std::cout << " Choose your operation?\n\n"
+        std::cout << "\n Choose your operation?\n\n"
                      " [1] Brute force\n"
                      " [2] Triangular approximation\n"
                      " [3] Christofides with 2-opt\n"
@@ -147,7 +147,7 @@ void Menu::operations(bool smallGraph, bool completeGraph) {
         switch (option) {
             case 1:
                 if (smallGraph) bruteForce();
-                else std::cout << " This graph is too large to use brute force!!!\n";
+                else std::cout << " This graph is too large to use brute force!\n";
                 break;
             case 2:
                 if (!smallGraph || completeGraph) triangularApproximation();
@@ -228,9 +228,13 @@ void Menu::triangularApproximation(){
 
 
 void Menu::nearestNeighbor() {
-    std::vector<Vertex *> tour;
+
+    std::queue<Vertex*> path;
+    double triangular = 0;
+    supervisor->getGraph().triangularApproximation(path, triangular);
     double dist = 0;
 
+    std::vector<Vertex *> tour;
     std::chrono::steady_clock::time_point startTime = std::chrono::steady_clock::now();
 
     supervisor->getGraph().nearestNeighborTSP(tour, dist);
@@ -249,7 +253,7 @@ void Menu::nearestNeighbor() {
 
     std::cout << "\n Distance: " << dist << " meters\n";
     std::cout << " Execution Time: " << time << " milliseconds\n\n";
-  
+    std::cout << " Compared to triangular approximation, distance improved by " << ((triangular - dist) / triangular) * 100 << " %\n";
 }
 
 void Menu::christofides(){
@@ -278,7 +282,7 @@ void Menu::christofides(){
 
     std::cout << "\n Distance: " << dist << " meters\n";
     std::cout << " Execution Time: " << time << " milliseconds\n";
-    std::cout << " Compared to triangular approximation, distance improved by " << ((triangular - dist) / triangular) * 100 << " %\n\n";
+    std::cout << " Compared to triangular approximation, distance improved by " << ((triangular - dist) / triangular) * 100 << " %\n";
 }
 void Menu::nearestInsertion() {
     std::queue<Vertex*> tour;
@@ -307,7 +311,7 @@ void Menu::nearestInsertion() {
 
     std::cout << "\n Distance: " << dist << " meters\n";
     std::cout << " Execution Time: " << time << " milliseconds\n";
-    std::cout << " Compared to triangular approximation, distance improved by " << ((triangular - dist) / triangular) * 100 << " %\n\n";
+    std::cout << " Compared to triangular approximation, distance improved by " << ((triangular - dist) / triangular) * 100 << " %\n";
 }
 
 void Menu::end() {
